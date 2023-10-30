@@ -2,33 +2,53 @@ package notes.models;
 
 import java.util.*;
 
+import static notes.models.Status.NULL_SIZE;
+
 public class Program {
     public static List<Notes> notes = new ArrayList<>();
-    static Scanner scanner = new Scanner(System.in);
-    public static void main(String[] args) {
+    public static Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws InterruptedException {
         Menu.getMenu();
         while(true) {
-            switch (scanner.nextInt()) {
-                case 1 : Menu.createNote(notes); break;
-                case 5 :
-                    if(!notes.isEmpty()) {
-                        System.out.println("Write name note");
-                        Menu.infoNote(scanner.next());
-                    } else Menu.infoSizeNotes();
-                case 6 :
-                    System.out.printf("Your nave - %d notes\n", notes.size());
-                    if(Menu.yesOrNo()) exit();
-                    else Menu.infoMenu(); break;
-                case 0 : exit(); break;
+            switch (scanner.nextLine()) {
+                case "1" : Menu.createNote(notes); break;
+                case "2" :
+                    if(!notes.isEmpty()) Menu.deleteNote();
+                    else yesOrNo(Status.NULL_SIZE);
+                    break;
+                case "4" :
+                    System.out.printf("Колличество заметок у вас - %d\n\n", notes.size());
+                    notes.forEach(notes1 -> System.out.println(notes1));
+                    yesOrNo(Status.MISS); break;
+                case "5" :
+                    if(!notes.isEmpty()) Menu.infoNote();
+                    else yesOrNo(Status.NULL_SIZE);
+                    break;
+                case "0" : exit(); break;
                 default:
-                    System.out.println("There is no such command! Enter another command.");
-                    Menu.infoMenu(); break;
+                    System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
+                    yesOrNo(Status.MISS); break;
             }
         }
     }
 
+    public static void yesOrNo(Status info) {
+        String choice;
+        if(info.equals(NULL_SIZE)) Status.printNullSize();
+        System.out.println("Хотите продолжить? Д or Н?");
+        while(true) {
+            choice = Program.scanner.nextLine();
+            if("Нн".contains(choice)) Program.exit();
+            else if ("Дд".contains(choice)) {
+                Menu.infoMenu();
+                return;
+            }
+            System.out.println("Не верно. Хотите продолжть? Д or Н?");
+        }
+    }
+
     public static void exit() {
-        System.out.println("\nGood bye!");
+        System.out.println("\nДо свидания!");
         scanner.close();
         System.exit(0);
     }

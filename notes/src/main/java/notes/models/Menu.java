@@ -2,14 +2,13 @@ package notes.models;
 
 import java.util.*;
 
+import static notes.models.Status.MISS;
+import static notes.models.Status.NULL_SIZE;
+
 public class Menu {
-    /*private static final Map<Integer, String> MENU = new LinkedHashMap<>(Map.of(1,"- Create new note.", 2, "- Delete note.",
-            3, "- Update notes.", 4, "- All notes.", 5, "- Info about note.", 6, "- Size my notes.", 0, "- Exit\n"));*/
-
-    private static final List<String> MENU = new ArrayList<>(Arrays.asList("1 - Create new note.","2 - Delete note.",
-            "3 - Update notes.","4 - All notes.","5  - Info about note.","6 - Size my notes.","\n0 - Exit\n"));
+    private static final List<String> MENU = new ArrayList<>(Arrays.asList("1 - Создать новую заметку.","2 - Удалить заметку.",
+            "3 - Обновить заметку.","4 - Ваши заметки.","5 - Информация о заметке.","\n0 - Exit\n"));
     private static Menu menu;
-
     private Menu(){}
     public static Menu getMenu() {
         if(menu == null) {
@@ -19,47 +18,54 @@ public class Menu {
         return menu;
     }
 
-    public static List<Notes> createNote(List<Notes> notes) {
-        System.out.print("Write name your note: ");
-        String name = Program.scanner.next();
-        System.out.print("Write info your note: ");
-        String infoNote = Program.scanner.next();
-        System.out.print("Write deadline your note: ");
-        String deadline = Program.scanner.next();
-        notes.add(new Notes(name,infoNote,deadline));
-        return notes;
+    public static void createNote(List<Notes> notes) throws InterruptedException {
+        System.out.print("Имя вашей заметки: ");
+        String name = Program.scanner.nextLine();
+        System.out.print("Содержание: ");
+        String infoNote = Program.scanner.nextLine();
+        System.out.print("Срок выполнения: ");
+        String deadline = Program.scanner.nextLine();
+        notes.add(new Notes(name,infoNote,deadline,Status.NEW));
+        System.out.println("\nЗаметка успешно создана!");
+        Thread.sleep(2000);
+        Menu.infoMenu();
     }
 
-    public static void infoNote(String nameNote) {
-        //Optional<String> name;
-        System.out.println(Program.notes);
-        Program.notes.forEach(notes -> {
-            if (notes.getName().equals(nameNote)) {
-                System.out.println(notes);
+    public static void deleteNote() throws InterruptedException {
+        System.out.println("Вот список ваших заметок. Введите имя заметки для удаления?");
+        Program.notes.forEach(notes -> System.out.println(notes.getName()));
+        String name = Program.scanner.nextLine();
+        for(Notes notes : Program.notes) {
+            if(notes.getName().equals(name)) {
+                Program.notes.remove(notes);
+                System.out.println("Заметка успешно удалена");
+                Thread.sleep(2000);
+                Menu.infoMenu();
+                return;
             }
-        });
+        }
+        System.out.println("Заметка с таким именем не существует");
+        Program.yesOrNo(MISS);
+    }
+
+    public static void infoNote() {
+        System.out.println("Вот список ваших заметок. Введите имя заметки для получения информации?");
+        Program.notes.forEach(notes -> System.out.println(notes.getName()));
+        String name = Program.scanner.nextLine();
+        for(Notes notes : Program.notes) {
+            if (notes.getName().equals(name)) {
+                System.out.println(notes);
+                Program.yesOrNo(MISS);
+                return;
+            }
+        }
+        Program.yesOrNo(NULL_SIZE);
     }
 
     public static void infoMenu() {
-        System.out.println("\nMake your choice:\n");
+        System.out.println("\nСделайте выбор:\n");
         MENU.forEach(e -> System.out.println(e));
     }
 
-    public static void infoSizeNotes() {
-        System.out.println("Your don't have notes. Do you want to continue? Y or N?");
-        if(Program.scanner.nextLine().equals("Y")) Menu.infoMenu();
-        else Program.scanner.close(); Program.exit();
-    }
 
-    public static boolean yesOrNo() {
-        System.out.println("Do you want to continue? Y or N?");
-        String choice;
-        while(true) {
-            choice = Program.scanner.next();
-            if(choice.equals("y") || choice.equals("n")) {
-                return choice.equals("n");
-            }
-            System.out.println("Not true. Do you want to continue? Y or N?");
-        }
-    }
 }
