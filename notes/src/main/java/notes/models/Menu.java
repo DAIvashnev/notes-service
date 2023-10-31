@@ -63,7 +63,7 @@ public class Menu {
         while(true) {
             choice = scanner.nextLine();
             if("Нн".contains(choice)) {
-                if(info.equals(LIST_UPDATE)) choiceMenu();
+                if(info.equals(LIST_UPDATE) || info.equals(NULL_SIZE)) choiceMenu();
                 exit();
             } else if ("Дд".contains(choice)) {
                 if(info.equals(LIST_UPDATE)) Logic.updateNote();

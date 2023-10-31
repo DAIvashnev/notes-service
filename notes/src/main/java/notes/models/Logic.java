@@ -16,7 +16,7 @@ public class Logic {
         System.out.print("Срок выполнения: ");
         String deadline = scanner.nextLine();
         notes.add(new Notes(name,infoNote,deadline,NEW));
-        System.out.println("\nЗаметка успешно создана!");
+        System.out.printf("\nЗаметка успешно создана! id заметки - %s", Program.notes.get(Program.notes.size()-1).getId());
         Thread.sleep(2000);
         Menu.choiceMenu();
     }
@@ -72,12 +72,15 @@ public class Logic {
                 Menu.yesOrNo(LIST_UPDATE);
             }
         }
-        Menu.yesOrNo(NULL_SIZE);
+        Menu.yesOrNo(LIST_UPDATE);
     }
 
     public static void infoNotes() {
         System.out.printf("Колличество заметок у вас - %d\n\n", Program.notes.size());
-        Program.notes.forEach(notes1 -> System.out.println(notes1));
+        Program.notes.forEach(notes1 -> {
+            if(!notes1.getStatus().equals(CLOSED)) System.out.println(notes1.getId()+" "+notes1.getName()+" " + notes1.getStatus()); });
+        Program.notes.forEach(notes1 -> {
+            if(notes1.getStatus().equals(CLOSED)) System.out.println(notes1.getId()+" "+notes1.getName()+" " + notes1.getStatus()); });
     }
 
     public static void infoNote() throws InterruptedException {

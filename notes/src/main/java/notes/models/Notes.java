@@ -2,12 +2,14 @@ package notes.models;
 
 
 public class Notes {
+    private final int id;
     private String name;
     private String infoNote;
     private String deadline;
     private Status status;
 
     public Notes(String name, String infoNote, String deadline, Status status) {
+        this.id = NotesIdsGenerator.getInstance().generateId();
         this.name = name;
         this.infoNote = infoNote;
         this.deadline = deadline;
@@ -30,6 +32,10 @@ public class Notes {
         this.status = status;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -48,6 +54,6 @@ public class Notes {
 
     @Override
     public String toString() {
-        return "Заметка - "+name+" (статус - "+status+")"+"\nОписание: "+infoNote+"\nСрок выполнения до - "+deadline+"\n";
+        return "Заметка - "+name+" (id - "+id+", "+"статус - "+status+")"+"\nОписание: "+infoNote+"\nСрок выполнения до - "+deadline+"\n";
     }
 }
