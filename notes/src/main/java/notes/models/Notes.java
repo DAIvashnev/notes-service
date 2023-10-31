@@ -1,5 +1,6 @@
 package notes.models;
 
+
 public class Notes {
     private String name;
     private String infoNote;
@@ -13,12 +14,40 @@ public class Notes {
         this.status = status;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setInfoNote(String infoNote) {
+        this.infoNote = infoNote;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public String getName() {
         return name;
     }
 
+    public String getInfoNote() {
+        return infoNote;
+    }
+
+    public String getDeadline() {
+        return deadline;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
     @Override
     public String toString() {
-        return "Заметка - "+name+" (ожидает выполнения)"+"\nОписание: "+infoNote+"\nСрок выполнения до - "+deadline+"\n";
+        return "Заметка - "+name+" (статус - "+status+")"+"\nОписание: "+infoNote+"\nСрок выполнения до - "+deadline+"\n";
     }
 }
