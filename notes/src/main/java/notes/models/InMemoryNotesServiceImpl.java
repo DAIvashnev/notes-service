@@ -3,15 +3,12 @@ package notes.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static notes.models.NoteStatus.NEW;
 
 public class InMemoryNotesServiceImpl implements NotesService {
     private final List<Note> notes = new ArrayList<>();
 
     public Note createNote(String name, String desc, String deadLine) {
-        Note note = new Note(name,desc,deadLine,NEW);
+        Note note = new Note(name,desc,deadLine);
         notes.add(note);
         return note;
     }
@@ -21,10 +18,22 @@ public class InMemoryNotesServiceImpl implements NotesService {
     }
 
     public Optional<Note> getNoteById(Integer id) {
+        for(Note note : notes) {
+            Optional<Integer> op = Optional.ofNullable(note.getId());
+            if(op.isPresent() && note.getId().equals(id)) {
+                return Optional.of(note);
+            }
+        }
         return Optional.empty();
     }
 
     public Optional<Note> getNoteByName(String name) {
+        for(Note note : notes) {
+            Optional<String> op = Optional.ofNullable(note.getName());
+            if(op.isPresent() && note.getName().equals(name)) {
+                return Optional.of(note);
+            }
+        }
         return Optional.empty();
     }
 
@@ -37,6 +46,12 @@ public class InMemoryNotesServiceImpl implements NotesService {
     }
 
     public boolean updateNote(Note updateNote) {
+        for (Note note : notes) {
+            if(note.getId().equals(updateNote.getId())) {
+                note = updateNote;
+                return true;
+            }
+        }
         return false;
     }
 }

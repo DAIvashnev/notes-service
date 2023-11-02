@@ -1,45 +1,45 @@
 package notes.models;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static notes.models.NoteStatus.CLOSED;
+
+// отладить меню - menuDell()
+// добавит сортировку - allNotes()
+// корректно распечатать Optional - infoByNote()
+// не выводить пустые поля - infoByNote()
+// переработать updateNote()
+
 
 public class CommandLineUiImpl implements UserInterface{
     private NotesService notesService;
     private final Scanner scanner = new Scanner(System.in);
-    private static final List<String> MENU = List.of("1 - Создать новую заметку.", "2 - Удалить заметку.",
-            "3 - Обновить заметку.", "4 - Ваши заметки.", "5 - Информация о заметке.", "\n0 - Exit\n");
     InMemoryNotesServiceImpl inMNS = new InMemoryNotesServiceImpl();
 
     public void start() {
         while (true) {
-            System.out.println("Сделайте выбор:\n");
-            MENU.forEach(System.out::println);
+            System.out.println("\nСделайте выбор:\n\n"+"1 - Создать новую заметку.\n"+"2 - Удалить заметку.\n"+
+                    "3 - Обновить заметку.\n"+"4 - Ваши заметки.\n"+"5 - Информация о заметке.\n"+"\n0 - Exit");
             switch (scanner.nextLine()) {
                 case "1":
-                    addNote();
-                    break;
+                    addNote(); break;
                 case "2":
-                    menuDell();
-                    break;
+                    menuDell(); break;
                 case "3":
-                    break;
+                    updateNote(); break;
                 case "4":
-                    System.out.printf("Колличество заметок у вас - %d\n\n", inMNS.getAllNotes().size());
-                    inMNS.getAllNotes().forEach(System.out::println);
-                    //добавить сортировку
+                    allNotes();
                     break;
                 case "5":
-                    infoByNote();
-                    break;
+                    infoByNote(); break;
                 case "0":
-                    exit();
-                    break;
+                    exit(); break;
                 default:
-                    System.out.print("Нет такой команды. Введите номер команды показанный на экране.");
-                    start();
-                    break;
+                    System.out.print("Нет такой команды. Введите номер команды показанный на экране."); break;
             }
-            //start();
         }
     }
 
@@ -50,93 +50,150 @@ public class CommandLineUiImpl implements UserInterface{
         String infoNote = scanner.nextLine();
         System.out.print("Срок выполнения: ");
         String deadline = scanner.nextLine();
-        System.out.printf("Заметка успешно создана! id заметки - %s\n\n",
+        System.out.printf("Заметка успешно создана! id заметки - %s\n",
                 inMNS.createNote(name,infoNote,deadline).getId());
     }
 
     private void menuDell() {
-        System.out.println("По какому критерию вести поиск удаления?:\n1 - Удалить по id.\n2 - Удалить по имени.\n3 - Отменить");
-        switch (scanner.nextLine()) {
-            case "1" :
-                System.out.print("Введите id: ");
-                if(scanner.hasNextInt()) {
-                    Integer data = scanner.nextInt();
-                    if(inMNS.deleteNoteById(data)) {
-                        System.out.println("Заметка успешно удалена.\n");
-                    } else {
-                        System.out.println("Заметки c такми ID не существует.\n");
+        if(!inMNS.getAllNotes().isEmpty()) {
+            System.out.println("По какому критерию вести поиск удаления?:\n1 - Удалить по id.\n2 - Удалить по имени.\n3 - Отменить");
+            switch (scanner.nextLine()) {
+                case "1" :
+                    System.out.print("Введите id: ");
+
+                    // отладить вызовы
+
+                    try {
+                        Integer nameId = Integer.parseInt(scanner.nextLine());
+                        if(inMNS.deleteNoteById(nameId)) {
+                            System.out.println("Заметка успешно удалена.");
+                        } else {
+                            System.out.println("Заметки c такми ID не существует.\n");
+                            menuDell();
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Не корректное ID.\n");
                         menuDell();
                     }
-                } else {
-                    System.out.println("Не корректные данные\n");
+                    break;
+                case "2" :
+                    System.out.print("Введите имя: ");
+                    if(inMNS.deleteNoteByName(scanner.nextLine())) {
+                        System.out.println("Заметка успешно удалена.");
+                    } else  {
+                        System.out.println("Заметки с таким именем не существует.\n");
+                        menuDell();
+                    }
+                    break;
+                case "3" :
+                    start();
+                    break;
+                default  :
+                    System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
                     menuDell();
-                }
-                break;
-            case "2" :
-                System.out.print("Введите имя: ");
-                if(inMNS.deleteNoteByName(scanner.nextLine())) {
-                    System.out.println("Заметка успешно удалена.\n");
-                } else  {
-                    System.out.println("Заметки с таким именем не существует.\n");
-                    menuDell();
-                }
-                break;
-            case "3" :
-                start();
-                break;
-            default  :
-                System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
-                menuDell();
-                break;
+                    break;
+            }
+        } else {
+            System.out.println("У вас нет заметок.");
         }
     }
 
-    private boolean infoByNote() {
-        System.out.println("По какому критерию вести поиск заметки?:\n1 - Найти по id.\n2 - Найти по имени.\n3 - Отменить");
-        switch (scanner.nextLine()) {
-            case "1" :
-                System.out.print("Введите id: ");
-                if(!scanner.hasNextInt()) {
-                    System.out.println("Не верный  id.");
-                    infoByNote();
-                } //else
-                break;
-            case "2" :
-                System.out.print("Введите имя: ");
-                break;
-            case "3" :
-                start(); break;
-            default  :
-                System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
-                infoByNote(); break;
+    private void updateNote() {
+        if(!inMNS.getAllNotes().isEmpty()) {
+            System.out.println("Вот список ваших заметок. Введите имя заметки которую хотите изменить?");
+            inMNS.getAllNotes().forEach(e-> System.out.println(e.getName()));
+            String name = scanner.nextLine();
+            Optional<Note> checkNote = inMNS.getAllNotes().stream().filter(e->e.getName().equals(name)).findFirst();
+            if (checkNote.isPresent()) {
+                Note newNote = inMNS.getAllNotes().stream().filter(e->e.getName().equals(name)).findFirst().get();
+                System.out.println("Выберите, что хотите изменить:\n1 - Имя\n2 - Заметка выполнена\n3 - Содержание\n4 - Срок выполнния\n5 - Отменить");
+                switch (scanner.nextLine()) {
+                    case "1" :
+                        System.out.println("Введите новое имя: ");
+                        newNote.setName(scanner.nextLine());
+                        inMNS.updateNote(newNote); break;
+                    case "2" :
+                        newNote.setStatus(CLOSED);
+                        inMNS.updateNote(newNote); break;
+                    case "3" :
+                        System.out.println("Введите новое содержание: ");
+                        newNote.setDescription(scanner.nextLine());
+                        inMNS.updateNote(newNote); break;
+                    case "4" :
+                        System.out.println("Введите новый срок выполнения: ");
+                        newNote.setDeadline(scanner.nextLine());
+                        inMNS.updateNote(newNote); break;
+                    case "5" :
+                        start(); break;
+                    default :
+                        System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
+                }
+                System.out.println("Заметка успешно обновлена!");
+            } else {
+                System.out.println("Заметки с таким именем нет.");
+            }
+        } else {
+            System.out.println("У вас нет заметок.");
         }
-        return false;
+    }
+
+    private void allNotes() {
+        AtomicInteger count = new AtomicInteger(0);
+        System.out.printf("Колличество заметок у вас - %d\n", inMNS.getAllNotes().size());
+        inMNS.getAllNotes().forEach(e-> {
+            count.getAndIncrement();
+            System.out.println(count+"."+e.getName()+" - "+e.getStatus());
+        });
+    }
+
+    private void infoByNote() {
+        if(!inMNS.getAllNotes().isEmpty()) {
+            System.out.println("По какому критерию вести поиск заметки?:\n1 - Найти по id.\n2 - Найти по имени.\n3 - Отменить");
+            switch (scanner.nextLine()) {
+                case "1" :
+                    System.out.print("Введите id: ");
+                    try {
+                        Integer nameId = Integer.parseInt(scanner.nextLine());
+                        if(inMNS.getNoteById(nameId).isPresent()) {
+
+                            // распечатать Optional
+
+                            System.out.println(inMNS.getNoteById(nameId));
+                        } else {
+                            System.out.println("Заметки c такми ID не существует.\n");
+                            infoByNote();
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Не корректное ID.\n");
+                        infoByNote();
+                    }
+                    break;
+                case "2" :
+                    System.out.print("Введите имя: ");
+                    String name = scanner.nextLine();
+                    if(inMNS.getNoteByName(name).isPresent()) {
+
+                        // распечатать Optional
+
+                        System.out.println(inMNS.getNoteByName(name));
+                    } else  {
+                        System.out.println("Заметки с таким именем не существует.\n");
+                        infoByNote();
+                    }
+                    break;
+                case "3" :
+                    start(); break;
+                default  :
+                    System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
+                    infoByNote(); break;
+            }
+        } else {
+            System.out.println("У вас нет заметок.");
+        }
     }
 
     private void exit() {
         scanner.close();
         System.exit(0);
     }
-
-    /*public static void yesOrNo(ChoiceMenu info) throws InterruptedException {
-        String choice;
-        if(info.equals(NULL_SIZE)) ChoiceMenu.printNullSize();
-        System.out.println("Хотите продолжить? Д или Н?");
-        while(true) {
-            choice = Program.scanner.nextLine();
-            if("Нн".contains(choice)) {
-                if(info.equals(LIST_UPDATE) || info.equals(NULL_SIZE)) {
-                    menu.choiceMenu();
-                }
-                exit();
-            } else if ("Дд".contains(choice)) {
-                if(info.equals(LIST_UPDATE)) {
-                    logic.updateNote();
-                }
-                menu.choiceMenu();
-                return;
-            }
-            System.out.println("Не верно. Хотите продолжть? Д или Н?");
-        }
-    }*/
 }

@@ -9,12 +9,12 @@ public class Note {
     private String deadline;
     private NoteStatus status;
 
-    public Note(String name, String description, String deadline, NoteStatus status) {
+    public Note(String name, String description, String deadline) {
         this.id = NotesIdsGenerator.getInstance().generateId();
         this.name = name;
         this.description = description;
         this.deadline = deadline;
-        this.status = status;
+        this.status = NoteStatus.NEW;
     }
 
     public Integer getId() {
