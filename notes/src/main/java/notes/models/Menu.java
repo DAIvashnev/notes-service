@@ -1,73 +1,70 @@
 package notes.models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-
-import static notes.models.Status.*;
 
 public class Menu {
-    private static Scanner scanner = new Scanner(System.in);
-    private static final List<String> MENU = new ArrayList<>(Arrays.asList("1 - Создать новую заметку.","2 - Удалить заметку.",
-            "3 - Обновить заметку.","4 - Ваши заметки.","5 - Информация о заметке.","\n0 - Exit\n"));
-    private static Menu menu;
-    private Menu(){}
-    public static Menu getMenu() throws InterruptedException {
-        if(menu == null) {
-            menu = new Menu();
-            choiceMenu();
-        }
-        return menu;
-    }
+    /*static Menu menu = new Menu();
+    static Logic logic = new Logic();
+    private static final List<String> MENU = List.of("1 - Создать новую заметку.", "2 - Удалить заметку.",
+            "3 - Обновить заметку.", "4 - Ваши заметки.", "5 - Информация о заметке.", "\n0 - Exit\n");
 
-    public static void choiceMenu() throws InterruptedException {
+    public void choiceMenu() throws InterruptedException {
         System.out.println("\nСделайте выбор:\n");
         MENU.forEach(e -> System.out.println(e));
         while (true) {
-            switch (scanner.nextLine()) {
+            switch (Application.scanner.nextLine()) {
                 case "1":
-                    Logic.createNote(Program.notes);
-                    break;
+                    logic.createNote(Application.note); break;
                 case "2":
-                    if (!Program.notes.isEmpty()) Logic.deleteNote();
-                    else yesOrNo(NULL_SIZE);
+                    if (!Application.note.isEmpty()) {
+                        logic.deleteNote();
+                    } else {
+                        yesOrNo(NULL_SIZE);
+                    }
                     break;
                 case "3":
-                    if (!Program.notes.isEmpty()) Logic.updateNote();
-                    else yesOrNo(NULL_SIZE);
+                    if (!Application.note.isEmpty()) {
+                        logic.updateNote();
+                    } else {
+                        yesOrNo(NULL_SIZE);
+                    }
                     break;
                 case "4":
-                    Logic.infoNotes();
-                    yesOrNo(LIST_MENU);
-                    break;
+                    logic.infoNotes();
+                    yesOrNo(LIST_MENU); break;
                 case "5":
-                    if (!Program.notes.isEmpty()) Logic.infoNote();
-                    else yesOrNo(NULL_SIZE);
+                    if (!Application.note.isEmpty()) {
+                        logic.infoNote();
+                    } else {
+                        yesOrNo(NULL_SIZE);
+                    }
                     break;
                 case "0":
-                    exit();
-                    break;
+                    exit(); break;
                 default:
                     System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
-                    yesOrNo(LIST_MENU);
-                    break;
+                    //yesOrNo(LIST_MENU); break;
             }
+            menu.choiceMenu();
         }
     }
 
-    public static void yesOrNo(Status info) throws InterruptedException {
+    public static void yesOrNo(ChoiceMenu info) throws InterruptedException {
         String choice;
-        if(info.equals(NULL_SIZE)) Status.printNullSize();
+        if(info.equals(NULL_SIZE)) ChoiceMenu.printNullSize();
         System.out.println("Хотите продолжить? Д или Н?");
         while(true) {
-            choice = scanner.nextLine();
+            choice = Program.scanner.nextLine();
             if("Нн".contains(choice)) {
-                if(info.equals(LIST_UPDATE) || info.equals(NULL_SIZE)) choiceMenu();
+                if(info.equals(LIST_UPDATE) || info.equals(NULL_SIZE)) {
+                    menu.choiceMenu();
+                }
                 exit();
             } else if ("Дд".contains(choice)) {
-                if(info.equals(LIST_UPDATE)) Logic.updateNote();
-                choiceMenu();
+                if(info.equals(LIST_UPDATE)) {
+                    logic.updateNote();
+                }
+                menu.choiceMenu();
                 return;
             }
             System.out.println("Не верно. Хотите продолжть? Д или Н?");
@@ -76,7 +73,7 @@ public class Menu {
 
     private static void exit() {
         System.out.println("\nДо свидания!");
-        scanner.close();
+        Application.scanner.close();
         System.exit(0);
-    }
+    }*/
 }
