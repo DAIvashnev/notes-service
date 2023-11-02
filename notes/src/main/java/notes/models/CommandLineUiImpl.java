@@ -11,9 +11,9 @@ public class CommandLineUiImpl implements UserInterface{
     InMemoryNotesServiceImpl inMNS = new InMemoryNotesServiceImpl();
 
     public void start() {
-        System.out.println("\nСделайте выбор:\n");
-        MENU.forEach(System.out::println);
         while (true) {
+            System.out.println("Сделайте выбор:\n");
+            MENU.forEach(System.out::println);
             switch (scanner.nextLine()) {
                 case "1":
                     addNote();
@@ -39,7 +39,7 @@ public class CommandLineUiImpl implements UserInterface{
                     start();
                     break;
             }
-            start();
+            //start();
         }
     }
 
@@ -50,7 +50,7 @@ public class CommandLineUiImpl implements UserInterface{
         String infoNote = scanner.nextLine();
         System.out.print("Срок выполнения: ");
         String deadline = scanner.nextLine();
-        System.out.printf("Заметка успешно создана! id заметки - %s\n",
+        System.out.printf("Заметка успешно создана! id заметки - %s\n\n",
                 inMNS.createNote(name,infoNote,deadline).getId());
     }
 
@@ -60,32 +60,34 @@ public class CommandLineUiImpl implements UserInterface{
             case "1" :
                 System.out.print("Введите id: ");
                 if(scanner.hasNextInt()) {
-                    if(inMNS.deleteNoteById(scanner.nextInt())) {
-                        System.out.println("Заметка успешно удалена.");
-                    }
-                    else  {
-                        System.out.printf("Заметки %s не существует.\n", scanner.nextLine());
+                    Integer data = scanner.nextInt();
+                    if(inMNS.deleteNoteById(data)) {
+                        System.out.println("Заметка успешно удалена.\n");
+                    } else {
+                        System.out.println("Заметки c такми ID не существует.\n");
                         menuDell();
                     }
-                } else  {
-                    System.out.printf("%s - не корректный id.\n", scanner.nextLine());
+                } else {
+                    System.out.println("Не корректные данные\n");
                     menuDell();
                 }
                 break;
             case "2" :
                 System.out.print("Введите имя: ");
                 if(inMNS.deleteNoteByName(scanner.nextLine())) {
-                    System.out.println("Заметка успешно удалена.");
+                    System.out.println("Заметка успешно удалена.\n");
                 } else  {
                     System.out.println("Заметки с таким именем не существует.\n");
                     menuDell();
                 }
                 break;
             case "3" :
-                start(); break;
+                start();
+                break;
             default  :
                 System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
-                menuDell(); break;
+                menuDell();
+                break;
         }
     }
 
