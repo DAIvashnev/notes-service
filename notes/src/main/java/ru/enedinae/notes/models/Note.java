@@ -1,4 +1,7 @@
-package notes.models;
+package ru.enedinae.notes.models;
+
+import ru.enedinae.notes.NoteStatus;
+import ru.enedinae.notes.logic.NotesIdsGenerator;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package notes.models;
+package ru.enedinae.notes;
 
 public interface UserInterface {
     void start();

@@ -40,7 +40,7 @@
               <transformers>
                 <transformer implementation=
                                      "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>notes.models.Application</mainClass>
+                  <mainClass>ru.enedinae.notes.app.Application</mainClass>
                 </transformer>
               </transformers>
             </configuration>

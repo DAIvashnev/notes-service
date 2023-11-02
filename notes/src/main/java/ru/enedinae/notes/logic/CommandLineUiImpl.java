@@ -1,11 +1,14 @@
-package notes.models;
+package ru.enedinae.notes.logic;
 
-import java.util.Arrays;
+import ru.enedinae.notes.NotesService;
+import ru.enedinae.notes.UserInterface;
+import ru.enedinae.notes.models.Note;
+
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static notes.models.NoteStatus.CLOSED;
+import static ru.enedinae.notes.NoteStatus.CLOSED;
 
 // отладить меню - menuDell()
 // добавит сортировку - allNotes()
@@ -14,7 +17,7 @@ import static notes.models.NoteStatus.CLOSED;
 // переработать updateNote()
 
 
-public class CommandLineUiImpl implements UserInterface{
+public class CommandLineUiImpl implements UserInterface {
     private NotesService notesService;
     private final Scanner scanner = new Scanner(System.in);
     InMemoryNotesServiceImpl inMNS = new InMemoryNotesServiceImpl();

@@ -1,4 +1,7 @@
-package notes.models;
+package ru.enedinae.notes.logic;
+
+import ru.enedinae.notes.NotesService;
+import ru.enedinae.notes.models.Note;
 
 import java.util.ArrayList;
 import java.util.List;

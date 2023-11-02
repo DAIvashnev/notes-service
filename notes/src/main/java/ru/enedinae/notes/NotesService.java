@@ -1,4 +1,6 @@
-package notes.models;
+package ru.enedinae.notes;
+
+import ru.enedinae.notes.models.Note;
 
 import java.util.List;
 import java.util.Optional;

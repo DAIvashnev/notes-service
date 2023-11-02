@@ -1,4 +1,6 @@
-package notes.models;
+package ru.enedinae.notes.app;
+
+import ru.enedinae.notes.logic.CommandLineUiImpl;
 
 public class Application {
     //private UserInterface ui;
