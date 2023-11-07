@@ -1,6 +1,6 @@
-package ru.enedinae.notes;
+package ru.enedinae.notes.service;
 
-import ru.enedinae.notes.models.Note;
+import ru.enedinae.notes.model.Note;
 
 import java.util.List;
 import java.util.Optional;

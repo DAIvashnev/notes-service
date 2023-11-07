@@ -1,7 +1,6 @@
-package ru.enedinae.notes.models;
+package ru.enedinae.notes.model;
 
-import ru.enedinae.notes.NoteStatus;
-import ru.enedinae.notes.logic.NotesIdsGenerator;
+import ru.enedinae.notes.enumeration.NoteStatus;
 
 import java.util.Objects;
 
