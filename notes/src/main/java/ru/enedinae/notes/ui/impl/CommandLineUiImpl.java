@@ -22,8 +22,8 @@ public class CommandLineUiImpl implements UserInterface {
     private final NotesService notesService;
     private final Scanner scanner = new Scanner(System.in);
 
-    public CommandLineUiImpl() {
-        notesService = new InMemoryNotesServiceImpl();
+    public CommandLineUiImpl(NotesService notesService) {
+        this.notesService = notesService;
     }
 
     public void start() {
