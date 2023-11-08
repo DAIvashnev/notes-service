@@ -24,24 +24,10 @@ public class InMemoryNotesServiceImpl implements NotesService {
 
     public Optional<Note> getNoteById(Integer id) {
         return notes.stream().filter(note -> Objects.equals(note.getId(), id)).findFirst();
-        /*for(Note note : notes) {
-            Optional<Integer> op = Optional.ofNullable(note.getId());
-            if(op.isPresent() && note.getId().equals(id)) {
-                return Optional.of(note);
-            }
-        }
-        return Optional.empty();*/
     }
 
     public Optional<Note> getNoteByName(String name) {
         return notes.stream().filter(note -> Objects.equals(note.getName(), name)).findFirst();
-        /*for(Note note : notes) {
-            Optional<String> op = Optional.ofNullable(note.getName());
-            if(op.isPresent() && note.getName().equals(name)) {
-                return Optional.of(note);
-            }
-        }
-        return Optional.empty();*/
     }
 
     public boolean deleteNoteById(Integer id) {
