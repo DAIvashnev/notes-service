@@ -1,7 +1,6 @@
 package ru.enedinae.notes.model;
 
 import ru.enedinae.notes.enumeration.NoteStatus;
-
 import java.util.Objects;
 
 public class Note {
@@ -61,7 +60,20 @@ public class Note {
 
     @Override
     public String toString() {
-        return "Заметка - "+name+" (id - "+id+", "+"статус - "+status+")"+"\nОписание: "+description+"\nСрок выполнения до - "+deadline+"\n";
+        StringBuilder noteInfo = new StringBuilder();
+        if(Objects.nonNull(name) && !name.isBlank()) {
+            noteInfo.append("Заметка - ").append(name);
+        } else {
+            noteInfo.append("'not name' - ").append(name);
+        }
+        noteInfo.append(" (id - ").append(id).append(", ").append("статус - ").append(status).append(")\n");
+        if(Objects.nonNull(description) && !description.isBlank()){
+            noteInfo.append("Описание: ").append(description);
+        }
+        if(Objects.nonNull(deadline) && !deadline.isBlank()) {
+            noteInfo.append("\nСрок выполнения до - ").append(deadline).append("\n");
+        }
+        return noteInfo.toString();
     }
 
     @Override

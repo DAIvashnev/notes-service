@@ -1,7 +1,6 @@
 package ru.enedinae.notes.ui.impl;
 
 import ru.enedinae.notes.service.NotesService;
-import ru.enedinae.notes.service.impl.InMemoryNotesServiceImpl;
 import ru.enedinae.notes.ui.UserInterface;
 import ru.enedinae.notes.model.Note;
 
@@ -14,7 +13,6 @@ import static ru.enedinae.notes.enumeration.NoteStatus.CLOSED;
 import static ru.enedinae.notes.enumeration.NoteStatus.NEW;
 
 // отладить меню - menuDell()
-// не выводить пустые поля - infoByNote()
 // переработать updateNote()
 
 
@@ -169,7 +167,7 @@ public class CommandLineUiImpl implements UserInterface {
     private void infoByNote() {
         if(!notesService.getAllNotes().isEmpty()) {
             while(true) {
-                System.out.println("По какому критерию вести поиск заметки?:\n1 - Найти по id.\n2 - Найти по имени.\n3 - Отменить");
+                System.out.println("\nПо какому критерию вести поиск заметки?:\n1 - Найти по id.\n2 - Найти по имени.\n3 - Отменить");
                 switch (scanner.nextLine()) {
                     case "1":
                         System.out.print("Введите id: ");
