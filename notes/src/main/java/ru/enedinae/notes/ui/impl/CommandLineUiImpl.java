@@ -5,15 +5,15 @@ import ru.enedinae.notes.service.impl.InMemoryNotesServiceImpl;
 import ru.enedinae.notes.ui.UserInterface;
 import ru.enedinae.notes.model.Note;
 
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static ru.enedinae.notes.enumeration.NoteStatus.CLOSED;
+import static ru.enedinae.notes.enumeration.NoteStatus.NEW;
 
 // отладить меню - menuDell()
-// добавит сортировку - allNotes()
-// корректно распечатать Optional - infoByNote()
 // не выводить пустые поля - infoByNote()
 // переработать updateNote()
 
@@ -21,6 +21,15 @@ import static ru.enedinae.notes.enumeration.NoteStatus.CLOSED;
 public class CommandLineUiImpl implements UserInterface {
     private final NotesService notesService;
     private final Scanner scanner = new Scanner(System.in);
+    private static final Comparator<Note> NOTE_BY_STATUS_COMPARATOR = (n1, n2) -> {
+      if(n1.getStatus() == CLOSED && n2.getStatus() == NEW) {
+            return 1;
+      } else if (n1.getStatus() == NEW && n2.getStatus() == CLOSED) {
+          return -1;
+      } else {
+          return 0;
+      }
+    };
 
     public CommandLineUiImpl(NotesService notesService) {
         this.notesService = notesService;
@@ -151,7 +160,7 @@ public class CommandLineUiImpl implements UserInterface {
     private void allNotes() {
         AtomicInteger count = new AtomicInteger(0);
         System.out.printf("Колличество заметок у вас - %d\n", notesService.getAllNotes().size());
-        notesService.getAllNotes().forEach(e-> {
+        notesService.getAllNotes().stream().sorted(NOTE_BY_STATUS_COMPARATOR).forEach(e-> {
             count.getAndIncrement();
             System.out.println(count+"."+e.getName()+" - "+e.getStatus());
         });
@@ -166,14 +175,10 @@ public class CommandLineUiImpl implements UserInterface {
                         System.out.print("Введите id: ");
                         try {
                             Integer nameId = Integer.parseInt(scanner.nextLine());
-                            if (notesService.getNoteById(nameId).isPresent()) {
-
-                                // распечатать Optional
-
-                                System.out.println(notesService.getNoteById(nameId));
-                            } else {
-                                System.out.println("Заметки c такми ID не существует.\n");
-                            }
+                            notesService.getNoteById(nameId).ifPresentOrElse(
+                                    System.out::println,
+                                    ()-> System.out.println("Заметки c такми ID не существует.\n")
+                            );
                         } catch (Exception e) {
                             System.out.println("Не корректное ID.\n");
                         }
@@ -181,14 +186,10 @@ public class CommandLineUiImpl implements UserInterface {
                     case "2":
                         System.out.print("Введите имя: ");
                         String name = scanner.nextLine();
-                        if (notesService.getNoteByName(name).isPresent()) {
-
-                            // распечатать Optional
-
-                            System.out.println(notesService.getNoteByName(name));
-                        } else {
-                            System.out.println("Заметки с таким именем не существует.\n");
-                        }
+                        notesService.getNoteByName(name).ifPresentOrElse(
+                                System.out::println,
+                                ()-> System.out.println("Заметки с таким именем не существует.\n")
+                        );
                         break;
                     case "3":
                         return;
