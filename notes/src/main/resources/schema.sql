@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS notes (
+id INT PRIMARY KEY,
+name VARCHAR(30),
+description VARCHAR(500),
+deadline VARCHAR(20)
+);
