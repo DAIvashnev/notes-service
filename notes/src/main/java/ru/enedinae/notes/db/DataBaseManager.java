@@ -1,4 +1,4 @@
-package ru.enedinae.notes.repository;
+package ru.enedinae.notes.db;
 
 import java.io.FileInputStream;
 import java.io.IOException;

@@ -1,56 +1,57 @@
 package ru.enedinae.notes.service.impl;
 
+import ru.enedinae.notes.mapper.NoteMapper;
 import ru.enedinae.notes.model.Note;
-import ru.enedinae.notes.repository.Repository;
-import ru.enedinae.notes.service.NotesServiceJdbc;
+import ru.enedinae.notes.repository.NoteRepository;
+import ru.enedinae.notes.service.NotesService;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
-public class NotesServiceJdbcImpl implements NotesServiceJdbc {
-    private Repository noteRepository;
+public class NotesServiceJdbcImpl implements NotesService {
 
-    /*public NotesServiceJdbcImpl(Repository noteRepository) {
-        this.noteRepository = noteRepository;
-    }*/
+    private final NoteRepository repository;
+    private final NoteMapper noteMapper;
 
-    public boolean insertNote() {
-        return false;
+    public NotesServiceJdbcImpl(NoteRepository repository, NoteMapper noteMapper) {
+        this.repository = repository;
+        this.noteMapper = noteMapper;
     }
 
-    public Optional<Note> selectById(Integer id) {
+    @Override
+    public Note createNote(String name, String desc, String deadLine) {
+        return null;
+    }
+
+    @Override
+    public List<Note> getAllNotes() {
+        ResultSet resultSet = repository.selectAll();
+        return noteMapper.map(resultSet);
+    }
+
+    @Override
+    public Optional<Note> getNoteById(Integer id) {
         return Optional.empty();
     }
 
-    public Optional<Note> selectByName(String name) {
+    @Override
+    public Optional<Note> getNoteByName(String name) {
         return Optional.empty();
     }
 
-    public boolean deleteById(Integer id) {
+    @Override
+    public boolean deleteNoteById(Integer id) {
         return false;
     }
 
-    public boolean deleteByName(String name) {
+    @Override
+    public boolean deleteNoteByName(String name) {
         return false;
     }
 
-    public boolean updateNote(String date) {
+    @Override
+    public boolean updateNote(Note updateNote) {
         return false;
-    }
-
-    public void selectAllNotes(ResultSet rs) {
-        try {
-            while (rs.next()) {
-                System.out.println(rs.getString("id") + " "
-                        + rs.getString("name") + " "
-                        + rs.getString("description") + " "
-                        + rs.getString("deadline") + " "
-                        + rs.getTimestamp("create_time") + " "
-                        + rs.getTimestamp("update_time"));
-            }
-        }catch (SQLException e) {
-            System.out.println(e);
-        }
     }
 }

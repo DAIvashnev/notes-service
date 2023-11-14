@@ -18,6 +18,9 @@ public class Note {
         this.status = NoteStatus.NEW;
     }
 
+    public Note() {
+    }
+
     public Integer getId() {
         return id;
     }
