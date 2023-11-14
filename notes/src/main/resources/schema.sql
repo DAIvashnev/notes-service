@@ -1,6 +1,8 @@
 CREATE TABLE IF NOT EXISTS notes (
-id INT PRIMARY KEY,
+id SERIAL PRIMARY KEY NOT NULL,
 name VARCHAR(30),
 description VARCHAR(500),
-deadline VARCHAR(20)
+deadline VARCHAR(20),
+create_time TIMESTAMPTZ(0) NOT NULL,
+update_time TIMESTAMPTZ(0) NOT NULL
 );
