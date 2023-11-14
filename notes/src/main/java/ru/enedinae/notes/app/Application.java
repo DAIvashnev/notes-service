@@ -1,5 +1,6 @@
 package ru.enedinae.notes.app;
 
+import ru.enedinae.notes.service.NotesServiceJdbc;
 import ru.enedinae.notes.service.impl.InMemoryNotesServiceImpl;
 import ru.enedinae.notes.service.impl.NotesServiceJdbcImpl;
 import ru.enedinae.notes.ui.impl.CommandLineJdbcImpl;

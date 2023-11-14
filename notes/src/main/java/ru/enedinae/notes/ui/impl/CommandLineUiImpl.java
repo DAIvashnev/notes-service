@@ -1,6 +1,7 @@
 package ru.enedinae.notes.ui.impl;
 
 import ru.enedinae.notes.service.NotesService;
+import ru.enedinae.notes.service.NotesServiceJdbc;
 import ru.enedinae.notes.ui.UserInterface;
 import ru.enedinae.notes.model.Note;
 

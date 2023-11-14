@@ -1,6 +1,7 @@
 package ru.enedinae.notes.service.impl;
 
 import ru.enedinae.notes.model.Note;
+import ru.enedinae.notes.repository.Repository;
 import ru.enedinae.notes.service.NotesServiceJdbc;
 
 import java.sql.ResultSet;
@@ -8,6 +9,11 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class NotesServiceJdbcImpl implements NotesServiceJdbc {
+    private Repository noteRepository;
+
+    /*public NotesServiceJdbcImpl(Repository noteRepository) {
+        this.noteRepository = noteRepository;
+    }*/
 
     public boolean insertNote() {
         return false;
