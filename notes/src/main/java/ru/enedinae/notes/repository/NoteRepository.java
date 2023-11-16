@@ -8,6 +8,7 @@ public interface NoteRepository {
     void insertNote(Note note);
     ResultSet selectAll();
     ResultSet selectById(Integer id);
+    ResultSet selectByName(String name);
     int deleteById(Integer id);
     int deleteById(String name);
 }

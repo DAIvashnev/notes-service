@@ -16,6 +16,7 @@ public class NoteRepositoryImpl implements NoteRepository {
             "VALUES(?, ?, ?, ?, now(), now())";
     private static final String SELECT_ALL = "SELECT * FROM notes";
     private static final String SELECT_BY_ID = "SELECT * FROM notes WHERE id = ?";
+    private static final String SELECT_BY_NAME = "SELECT * FROM notes WHERE name = ?";
     private static final String DELETE_BY_ID = "DELETE FROM notes WHERE id = ?";
     private static final String DELETE_BY_NAME = "DELETE FROM notes WHERE name = ?";
 
@@ -56,6 +57,17 @@ public class NoteRepositoryImpl implements NoteRepository {
         try {
             preparedStatement = dataBaseManager.getConnection().prepareStatement(SELECT_BY_ID);
             preparedStatement.setInt(1, id);
+            return preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResultSet selectByName(String name) {
+        try {
+            preparedStatement = dataBaseManager.getConnection().prepareStatement(SELECT_BY_ID);
+            preparedStatement.setString(1, name);
             return preparedStatement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();

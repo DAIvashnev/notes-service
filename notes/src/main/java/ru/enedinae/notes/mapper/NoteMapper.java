@@ -27,4 +27,23 @@ public class NoteMapper {
         }
         return notes;
     }
+
+    public Note mapNote(ResultSet resultSet) {
+        Note note = new Note();
+        try {
+            if(resultSet.wasNull()) {
+                return null;
+            }
+            while (resultSet.next()) {
+                note.setId(resultSet.getInt("id"));
+                note.setName(resultSet.getString("name"));
+                note.setDescription(resultSet.getString("description"));
+                note.setDeadline(resultSet.getString("deadline"));
+                note.setStatus(NoteStatus.valueOf(resultSet.getString("status")));
+            }
+            return note;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
 }

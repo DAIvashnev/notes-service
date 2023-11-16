@@ -7,6 +7,7 @@ import ru.enedinae.notes.service.NotesService;
 
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class NotesServiceJdbcImpl implements NotesService {
@@ -31,11 +32,13 @@ public class NotesServiceJdbcImpl implements NotesService {
     }
 
     public Optional<Note> getNoteById(Integer id) {
-        return Optional.empty();
+        ResultSet resultSet = repository.selectById(id);
+        return Optional.of(noteMapper.mapNote(resultSet));
     }
 
     public Optional<Note> getNoteByName(String name) {
-        return Optional.empty();
+        ResultSet resultSet = repository.selectByName(name);
+        return Optional.ofNullable(noteMapper.mapNote(resultSet));
     }
 
     public boolean deleteNoteById(Integer id) {
