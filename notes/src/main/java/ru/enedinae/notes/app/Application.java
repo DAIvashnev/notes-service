@@ -13,17 +13,13 @@ import java.util.Scanner;
 
 public class Application {
     public static void main(String[] args)  {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Start:\n1 - Service mode?\n2 - DataBase mode?\n");
-        String mode = scanner.nextLine();
-        new CommandLineUiImpl(resolveService(mode)).start();
-        scanner.close();
+        new CommandLineUiImpl(resolveService(args[0])).start();
     }
 
-    private static NotesService resolveService(String mode) {
-        if (Objects.equals("1", mode)) {
+    private static NotesService resolveService(String args) {
+        if (Objects.equals(args, "--sevice.mode=in-memory")) {
             return new InMemoryNotesServiceImpl();
-        } else if (Objects.equals("2", mode)){
+        } else if (Objects.equals(args, "--sevice.mode=data-base")){
             return new NotesServiceJdbcImpl(
                     new NoteRepositoryImpl(new DataBaseManager()),
                     new NoteMapper()

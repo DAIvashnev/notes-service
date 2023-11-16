@@ -1,6 +1,7 @@
 package ru.enedinae.notes.service.impl;
 
 import ru.enedinae.notes.model.Note;
+import ru.enedinae.notes.model.NotesIdsGenerator;
 import ru.enedinae.notes.service.NotesService;
 
 import java.util.ArrayList;
@@ -13,12 +14,12 @@ public class InMemoryNotesServiceImpl implements NotesService {
 
     public Note createNote(String name, String desc, String deadLine) {
         Note note = new Note(name,desc,deadLine);
+        note.setId(NotesIdsGenerator.getInstance().generateId());
         notes.add(note);
         return note;
     }
 
     public List<Note> getAllNotes() {
-
         return notes;
     }
 

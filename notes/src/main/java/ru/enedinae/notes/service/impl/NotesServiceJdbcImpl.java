@@ -19,38 +19,33 @@ public class NotesServiceJdbcImpl implements NotesService {
         this.noteMapper = noteMapper;
     }
 
-    @Override
     public Note createNote(String name, String desc, String deadLine) {
-        return null;
+        Note note = new Note(name, desc, deadLine);
+        repository.insertNote(note);
+        return note;
     }
 
-    @Override
     public List<Note> getAllNotes() {
         ResultSet resultSet = repository.selectAll();
         return noteMapper.map(resultSet);
     }
 
-    @Override
     public Optional<Note> getNoteById(Integer id) {
         return Optional.empty();
     }
 
-    @Override
     public Optional<Note> getNoteByName(String name) {
         return Optional.empty();
     }
 
-    @Override
     public boolean deleteNoteById(Integer id) {
-        return false;
+        return repository.deleteById(id) != 0;
     }
 
-    @Override
     public boolean deleteNoteByName(String name) {
-        return false;
+        return repository.deleteById(name) != 0;
     }
 
-    @Override
     public boolean updateNote(Note updateNote) {
         return false;
     }

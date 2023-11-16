@@ -31,7 +31,7 @@ public class DataBaseManager {
             String schemaSql = Files.readString(Path.of("notes/src/main/resources/schema.sql"));
             statement.execute(schemaSql);
         } catch (IOException | SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw   new RuntimeException(e);
         }
     }
 

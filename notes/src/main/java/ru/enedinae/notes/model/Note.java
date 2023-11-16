@@ -11,7 +11,6 @@ public class Note {
     private NoteStatus status;
 
     public Note(String name, String description, String deadline) {
-        this.id = NotesIdsGenerator.getInstance().generateId();
         this.name = name;
         this.description = description;
         this.deadline = deadline;

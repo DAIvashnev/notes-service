@@ -3,6 +3,7 @@ id SERIAL PRIMARY KEY NOT NULL,
 name VARCHAR(30),
 description VARCHAR(500),
 deadline VARCHAR(20),
+status VARCHAR(6) NOT NULL,
 create_time TIMESTAMPTZ(0) NOT NULL,
 update_time TIMESTAMPTZ(0) NOT NULL
 );

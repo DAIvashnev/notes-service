@@ -1,5 +1,6 @@
 package ru.enedinae.notes.ui.impl;
 
+import ru.enedinae.notes.db.DataBaseManager;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.service.NotesService;
 import ru.enedinae.notes.ui.UserInterface;
@@ -87,6 +88,7 @@ public class CommandLineUiImpl implements UserInterface {
                             Integer nameId = Integer.parseInt(scanner.nextLine());
                             if (notesService.deleteNoteById(nameId)) {
                                 System.out.println("Заметка успешно удалена.");
+                                return;
                             } else {
                                 System.out.println("Заметки c такми ID не существует.\n");
                             }
@@ -203,6 +205,8 @@ public class CommandLineUiImpl implements UserInterface {
 
     private void exit() {
         scanner.close();
+        DataBaseManager dbm = new DataBaseManager();
+        dbm.closeConnection();
         System.exit(0);
     }
 }
