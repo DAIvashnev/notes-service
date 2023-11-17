@@ -66,7 +66,7 @@ public class NoteRepositoryImpl implements NoteRepository {
 
     public ResultSet selectByName(String name) {
         try {
-            preparedStatement = dataBaseManager.getConnection().prepareStatement(SELECT_BY_ID);
+            preparedStatement = dataBaseManager.getConnection().prepareStatement(SELECT_BY_NAME);
             preparedStatement.setString(1, name);
             return preparedStatement.executeQuery();
         } catch (SQLException e) {
@@ -79,17 +79,6 @@ public class NoteRepositoryImpl implements NoteRepository {
         try {
             preparedStatement = dataBaseManager.getConnection().prepareStatement(DELETE_BY_ID);
             preparedStatement.setInt(1, id);
-            return preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public int deleteById(String name) {
-        try {
-            preparedStatement = dataBaseManager.getConnection().prepareStatement(DELETE_BY_NAME);
-            preparedStatement.setString(1, name);
             return preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

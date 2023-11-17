@@ -11,6 +11,5 @@ public interface NotesService {
     Optional<Note> getNoteById(Integer id);
     Optional<Note> getNoteByName(String name);
     boolean deleteNoteById(Integer id);
-    boolean deleteNoteByName(String name);
     boolean updateNote(Note updateNote);
 }

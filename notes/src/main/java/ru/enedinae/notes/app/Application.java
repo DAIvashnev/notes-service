@@ -17,9 +17,9 @@ public class Application {
     }
 
     private static NotesService resolveService(String args) {
-        if (Objects.equals(args, "--sevice.mode=in-memory")) {
+        if (Objects.equals(args, "--service.mode=in-memory")) {
             return new InMemoryNotesServiceImpl();
-        } else if (Objects.equals(args, "--sevice.mode=data-base")){
+        } else if (Objects.equals(args, "--service.mode=data-base")){
             return new NotesServiceJdbcImpl(
                     new NoteRepositoryImpl(new DataBaseManager()),
                     new NoteMapper()

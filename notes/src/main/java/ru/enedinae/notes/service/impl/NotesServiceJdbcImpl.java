@@ -33,7 +33,7 @@ public class NotesServiceJdbcImpl implements NotesService {
 
     public Optional<Note> getNoteById(Integer id) {
         ResultSet resultSet = repository.selectById(id);
-        return Optional.of(noteMapper.mapNote(resultSet));
+        return Optional.ofNullable(noteMapper.mapNote(resultSet));
     }
 
     public Optional<Note> getNoteByName(String name) {
@@ -43,10 +43,6 @@ public class NotesServiceJdbcImpl implements NotesService {
 
     public boolean deleteNoteById(Integer id) {
         return repository.deleteById(id) != 0;
-    }
-
-    public boolean deleteNoteByName(String name) {
-        return repository.deleteById(name) != 0;
     }
 
     public boolean updateNote(Note updateNote) {

@@ -37,7 +37,7 @@ public class CommandLineUiImpl implements UserInterface {
     public void start() {
         while (true) {
             System.out.println("\nСделайте выбор:\n\n"+"1 - Создать новую заметку.\n"+"2 - Удалить заметку.\n"+
-                    "3 - Обновить заметку.\n"+"4 - Ваши заметки.\n"+"5 - Информация о заметке.\n"+"\n0 - Exit");
+                    "3 - Обновить заметку.\n"+"4 - Ваши заметки.\n"+"5 - Информация о заметке.\n"+"6 - Обновить интерфейс.\n"+"\n0 - Exit");
             switch (scanner.nextLine()) {
                 case "1":
                     addNote();
@@ -53,6 +53,9 @@ public class CommandLineUiImpl implements UserInterface {
                     break;
                 case "5":
                     infoByNote();
+                    break;
+                case "6" :
+                    System.out.print("\033[H\033[J");
                     break;
                 case "0":
                     exit();
@@ -77,13 +80,11 @@ public class CommandLineUiImpl implements UserInterface {
     private void menuDell() {
         if(!notesService.getAllNotes().isEmpty()) {
             while(true) {
-                System.out.println("По какому критерию вести поиск удаления?:\n1 - Удалить по id.\n2 - Удалить по имени.\n3 - Отменить");
+                allNotes();
+                System.out.println("\n1 - Ввести ID заметки для удаления.\n2 - Отменить");
                 switch (scanner.nextLine()) {
                     case "1":
                         System.out.print("Введите id: ");
-
-                        // отладить вызовы
-
                         try {
                             Integer nameId = Integer.parseInt(scanner.nextLine());
                             if (notesService.deleteNoteById(nameId)) {
@@ -97,14 +98,6 @@ public class CommandLineUiImpl implements UserInterface {
                         }
                         break;
                     case "2":
-                        System.out.print("Введите имя: ");
-                        if (notesService.deleteNoteByName(scanner.nextLine())) {
-                            System.out.println("Заметка успешно удалена.");
-                        } else {
-                            System.out.println("Заметки с таким именем не существует.\n");
-                        }
-                        break;
-                    case "3":
                         return;
                     default:
                         System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
@@ -162,7 +155,7 @@ public class CommandLineUiImpl implements UserInterface {
         System.out.printf("Колличество заметок у вас - %d\n", notesService.getAllNotes().size());
         notesService.getAllNotes().stream().sorted(NOTE_BY_STATUS_COMPARATOR).forEach(e-> {
             count.getAndIncrement();
-            System.out.println(count+"."+e.getName()+" - "+e.getStatus());
+            System.out.printf(count+"."+e.getName()+" - "+e.getStatus()+" (id: %d)\n", e.getId());
         });
     }
 
@@ -182,7 +175,7 @@ public class CommandLineUiImpl implements UserInterface {
                         } catch (Exception e) {
                             System.out.println("Не корректное ID.\n");
                         }
-                        break;
+                        return;
                     case "2":
                         System.out.print("Введите имя: ");
                         String name = scanner.nextLine();
@@ -205,8 +198,7 @@ public class CommandLineUiImpl implements UserInterface {
 
     private void exit() {
         scanner.close();
-        DataBaseManager dbm = new DataBaseManager();
-        dbm.closeConnection();
+        new DataBaseManager().closeConnection();
         System.exit(0);
     }
 }

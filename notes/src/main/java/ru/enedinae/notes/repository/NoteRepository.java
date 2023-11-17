@@ -10,5 +10,5 @@ public interface NoteRepository {
     ResultSet selectById(Integer id);
     ResultSet selectByName(String name);
     int deleteById(Integer id);
-    int deleteById(String name);
+
 }

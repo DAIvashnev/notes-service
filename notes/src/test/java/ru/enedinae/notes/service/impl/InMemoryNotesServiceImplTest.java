@@ -73,14 +73,4 @@ public class InMemoryNotesServiceImplTest {
         assertFalse(NOTES_SERVICE.deleteNoteById(-1));
         assertEquals(NOTES_SERVICE.getAllNotes().size(), 3);
     }
-
-    @Test
-    @Order(7)
-    public void deleteNoteByNameTest() {
-        assertEquals(NOTES_SERVICE.getAllNotes().size(), 3);
-        assertTrue(NOTES_SERVICE.deleteNoteByName(NOTE_NAME));
-        assertFalse(NOTES_SERVICE.deleteNoteByName("Katya"));
-        assertFalse(NOTES_SERVICE.deleteNoteByName(""));
-        assertEquals(NOTES_SERVICE.getAllNotes().size(), 0);
-    }
 }
