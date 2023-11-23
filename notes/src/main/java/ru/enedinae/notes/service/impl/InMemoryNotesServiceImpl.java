@@ -35,10 +35,6 @@ public class InMemoryNotesServiceImpl implements NotesService {
         return notes.removeIf(note -> note.getId().equals(id));
     }
 
-    public boolean deleteNoteByName(String name) {
-        return notes.removeIf(note -> note.getName().equals(name));
-    }
-
     public boolean updateNote(Note updateNote) {
         return true;
     }

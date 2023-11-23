@@ -18,7 +18,7 @@ public class NoteRepositoryImpl implements NoteRepository {
     private static final String SELECT_BY_ID = "SELECT * FROM notes WHERE id = ?";
     private static final String SELECT_BY_NAME = "SELECT * FROM notes WHERE name = ?";
     private static final String DELETE_BY_ID = "DELETE FROM notes WHERE id = ?";
-    private static final String DELETE_BY_NAME = "DELETE FROM notes WHERE name = ?";
+    private static final String UPDATE_NOTES = "UPDATE notes SET name = ?, status = ?, description = ?, deadline = ?, update_time = now() WHERE id = ?";
 
     public NoteRepositoryImpl(DataBaseManager dataBaseManager) {
         this.dataBaseManager = dataBaseManager;
@@ -83,6 +83,22 @@ public class NoteRepositoryImpl implements NoteRepository {
         } catch (SQLException e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+
+    public boolean updateNote(Note updateNote) {
+        try {
+            preparedStatement = dataBaseManager.getConnection().prepareStatement(UPDATE_NOTES);
+            preparedStatement.setInt(5, updateNote.getId());
+            preparedStatement.setString(1, updateNote.getName());
+            preparedStatement.setString(2, updateNote.getStatus().toString());
+            preparedStatement.setString(3, updateNote.getDescription());
+            preparedStatement.setString(4, updateNote.getDeadline());
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

@@ -5,6 +5,7 @@ import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.service.NotesService;
 import ru.enedinae.notes.ui.UserInterface;
 
+import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Scanner;
@@ -111,39 +112,55 @@ public class CommandLineUiImpl implements UserInterface {
 
     private void updateNote() {
         if(!notesService.getAllNotes().isEmpty()) {
-            System.out.println("Вот список ваших заметок. Введите имя заметки которую хотите изменить?");
-            notesService.getAllNotes().forEach(e-> System.out.println(e.getName()));
-            String name = scanner.nextLine();
-            Optional<Note> checkNote = notesService.getNoteByName(name);
-            if (checkNote.isPresent()) {
-                Note newNote = notesService.getAllNotes().stream().filter(e->e.getName().equals(name)).findFirst().get();
-                System.out.println("Выберите, что хотите изменить:\n1 - Имя\n2 - Заметка выполнена\n3 - Содержание\n4 - Срок выполнния\n5 - Отменить");
-                switch (scanner.nextLine()) {
-                    case "1" :
-                        System.out.println("Введите новое имя: ");
-                        newNote.setName(scanner.nextLine());
-                        break;
-                    case "2" :
-                        newNote.setStatus(CLOSED);
-                        break;
-                    case "3" :
-                        System.out.println("Введите новое содержание: ");
-                        newNote.setDescription(scanner.nextLine());
-                        break;
-                    case "4" :
-                        System.out.println("Введите новый срок выполнения: ");
-                        newNote.setDeadline(scanner.nextLine());
-                        break;
-                    case "5" :
+            while(true) {
+                allNotes();
+                System.out.println("\nВот список ваших заметок. Введите ID заметки которую хотите изменить?");
+                try {
+                    String name = scanner.nextLine();
+                    Optional<Note> checkNote = notesService.getNoteById(Integer.parseInt(name));
+                    if (checkNote.isPresent()) {
+                        Note newNote = notesService.getAllNotes().stream().filter(e -> e.getId().equals(Integer.parseInt(name))).findFirst().get();
+                        System.out.println("Выберите, что хотите изменить:\n1 - Имя\n2 - Заметка выполнена\n3 - Содержание\n4 - Срок выполнния\n5 - Отменить");
+                        switch (scanner.nextLine()) {
+                            case "1":
+                                System.out.println("Введите новое имя: ");
+                                newNote.setName(scanner.nextLine());
+                                break;
+                            case "2":
+                                newNote.setStatus(CLOSED);
+                                break;
+                            case "3":
+                                System.out.println("Введите новое содержание: ");
+                                newNote.setDescription(scanner.nextLine());
+                                break;
+                            case "4":
+                                System.out.println("Введите новый срок выполнения: ");
+                                newNote.setDeadline(scanner.nextLine());
+                                break;
+                            case "5":
+                                return;
+                            default:
+                                System.out.println("Нет такой команды.");
+                                return;
+                        }
+                        System.out.println("Заметка успешно обновлена!");
+                        Field[] fields = newNote.getClass().getFields();
+                        System.out.println(fields);
+                        for(Field f : fields) {
+                            System.out.println(f+ "!!!!!!!!!!");
+                            f.setAccessible(true);
+                            if(f.get(newNote) == null) {
+                                f.set(newNote, "");
+                            }
+                        }
+                        notesService.updateNote(newNote);
                         return;
-                    default :
-                        System.out.println("Нет такой команды.");
-                        return;
+                    } else {
+                        System.out.println("Заметки с таким ID нет.\n");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Не корректное ID.\n");
                 }
-                System.out.println("Заметка успешно обновлена!");
-                notesService.updateNote(newNote);
-            } else {
-                System.out.println("Заметки с таким именем нет.");
             }
         } else {
             System.out.println("У вас нет заметок.");
@@ -175,7 +192,7 @@ public class CommandLineUiImpl implements UserInterface {
                         } catch (Exception e) {
                             System.out.println("Не корректное ID.\n");
                         }
-                        return;
+                        break;
                     case "2":
                         System.out.print("Введите имя: ");
                         String name = scanner.nextLine();
