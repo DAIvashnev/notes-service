@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class NoteMapper {
-
     public List<Note> map(ResultSet resultSet) {
         List<Note> notes = new ArrayList<>();
         try {
@@ -41,6 +40,7 @@ public class NoteMapper {
             }
             return null;
         } catch (SQLException e) {
+            e.printStackTrace();
             return null;
         }
     }

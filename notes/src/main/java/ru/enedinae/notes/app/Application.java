@@ -9,7 +9,6 @@ import ru.enedinae.notes.service.impl.NotesServiceJdbcImpl;
 import ru.enedinae.notes.ui.impl.CommandLineUiImpl;
 
 import java.util.Objects;
-import java.util.Scanner;
 
 public class Application {
     public static void main(String[] args)  {
@@ -20,10 +19,7 @@ public class Application {
         if (Objects.equals(args, "--service.mode=in-memory")) {
             return new InMemoryNotesServiceImpl();
         } else if (Objects.equals(args, "--service.mode=data-base")){
-            return new NotesServiceJdbcImpl(
-                    new NoteRepositoryImpl(new DataBaseManager()),
-                    new NoteMapper()
-            );
+            return new NotesServiceJdbcImpl(new NoteRepositoryImpl(new DataBaseManager(), new NoteMapper()));
         }
         throw new IllegalArgumentException("Нет такого выбора");
     }

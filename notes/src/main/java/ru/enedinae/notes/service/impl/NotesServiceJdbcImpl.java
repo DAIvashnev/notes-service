@@ -13,11 +13,9 @@ import java.util.Optional;
 public class NotesServiceJdbcImpl implements NotesService {
 
     private final NoteRepository repository;
-    private final NoteMapper noteMapper;
 
-    public NotesServiceJdbcImpl(NoteRepository repository, NoteMapper noteMapper) {
+    public NotesServiceJdbcImpl(NoteRepository repository) {
         this.repository = repository;
-        this.noteMapper = noteMapper;
     }
 
     public Note createNote(String name, String desc, String deadLine) {
@@ -27,18 +25,15 @@ public class NotesServiceJdbcImpl implements NotesService {
     }
 
     public List<Note> getAllNotes() {
-        ResultSet resultSet = repository.selectAll();
-        return noteMapper.map(resultSet);
+        return repository.selectAll();
     }
 
     public Optional<Note> getNoteById(Integer id) {
-        ResultSet resultSet = repository.selectById(id);
-        return Optional.ofNullable(noteMapper.mapNote(resultSet));
+        return Optional.ofNullable(repository.selectById(id));
     }
 
     public Optional<Note> getNoteByName(String name) {
-        ResultSet resultSet = repository.selectByName(name);
-        return Optional.ofNullable(noteMapper.mapNote(resultSet));
+        return Optional.ofNullable(repository.selectByName(name));
     }
 
     public boolean deleteNoteById(Integer id) {

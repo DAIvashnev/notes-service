@@ -5,6 +5,7 @@ import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.service.NotesService;
 import ru.enedinae.notes.ui.UserInterface;
 
+import javax.swing.text.html.Option;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.Optional;
@@ -13,10 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static ru.enedinae.notes.enumeration.NoteStatus.CLOSED;
 import static ru.enedinae.notes.enumeration.NoteStatus.NEW;
-
-// отладить меню - menuDell()
-// переработать updateNote()
-
 
 public class CommandLineUiImpl implements UserInterface {
     private final NotesService notesService;
@@ -71,11 +68,11 @@ public class CommandLineUiImpl implements UserInterface {
         System.out.print("Имя вашей заметки: ");
         String name = scanner.nextLine();
         System.out.print("Содержание: ");
-        String infoNote = scanner.nextLine();
+        String description = scanner.nextLine();
         System.out.print("Срок выполнения: ");
         String deadline = scanner.nextLine();
         System.out.printf("Заметка успешно создана! id заметки - %s\n",
-                notesService.createNote(name,infoNote,deadline).getId());
+                notesService.createNote(name,description,deadline).getId());
     }
 
     private void menuDell() {
@@ -117,25 +114,25 @@ public class CommandLineUiImpl implements UserInterface {
                 System.out.println("\nВот список ваших заметок. Введите ID заметки которую хотите изменить?");
                 try {
                     String name = scanner.nextLine();
-                    Optional<Note> checkNote = notesService.getNoteById(Integer.parseInt(name));
-                    if (checkNote.isPresent()) {
-                        Note newNote = notesService.getAllNotes().stream().filter(e -> e.getId().equals(Integer.parseInt(name))).findFirst().get();
+                    Optional<Note> newNote = notesService.getNoteById(Integer.parseInt(name));
+                    if (newNote.isPresent()) {
+                        Note note = newNote.get();
                         System.out.println("Выберите, что хотите изменить:\n1 - Имя\n2 - Заметка выполнена\n3 - Содержание\n4 - Срок выполнния\n5 - Отменить");
                         switch (scanner.nextLine()) {
                             case "1":
                                 System.out.println("Введите новое имя: ");
-                                newNote.setName(scanner.nextLine());
+                                note.setName(scanner.nextLine());
                                 break;
                             case "2":
-                                newNote.setStatus(CLOSED);
+                                note.setStatus(CLOSED);
                                 break;
                             case "3":
                                 System.out.println("Введите новое содержание: ");
-                                newNote.setDescription(scanner.nextLine());
+                                note.setDescription(scanner.nextLine());
                                 break;
                             case "4":
                                 System.out.println("Введите новый срок выполнения: ");
-                                newNote.setDeadline(scanner.nextLine());
+                                note.setDeadline(scanner.nextLine());
                                 break;
                             case "5":
                                 return;
@@ -144,16 +141,7 @@ public class CommandLineUiImpl implements UserInterface {
                                 return;
                         }
                         System.out.println("Заметка успешно обновлена!");
-                        Field[] fields = newNote.getClass().getFields();
-                        System.out.println(fields);
-                        for(Field f : fields) {
-                            System.out.println(f+ "!!!!!!!!!!");
-                            f.setAccessible(true);
-                            if(f.get(newNote) == null) {
-                                f.set(newNote, "");
-                            }
-                        }
-                        notesService.updateNote(newNote);
+                        notesService.updateNote(note);
                         return;
                     } else {
                         System.out.println("Заметки с таким ID нет.\n");
@@ -215,7 +203,6 @@ public class CommandLineUiImpl implements UserInterface {
 
     private void exit() {
         scanner.close();
-        new DataBaseManager().closeConnection();
         System.exit(0);
     }
 }
