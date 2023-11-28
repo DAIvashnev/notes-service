@@ -1,13 +1,10 @@
 package ru.enedinae.notes.service.impl;
 
-import ru.enedinae.notes.mapper.NoteMapper;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.repository.NoteRepository;
 import ru.enedinae.notes.service.NotesService;
 
-import java.sql.ResultSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class NotesServiceJdbcImpl implements NotesService {
@@ -31,8 +28,8 @@ public class NotesServiceJdbcImpl implements NotesService {
         return Optional.ofNullable(repository.selectById(id));
     }
 
-    public Optional<List<Note>> getNoteByName(String name) {
-        return Optional.ofNullable(repository.selectByName(name));
+    public List<Note> getNoteByName(String name) {
+        return repository.selectByName(name);
     }
 
     public boolean deleteNoteById(Integer id) {

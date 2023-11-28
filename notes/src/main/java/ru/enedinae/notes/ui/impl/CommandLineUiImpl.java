@@ -7,9 +7,7 @@ import ru.enedinae.notes.ui.UserInterface;
 
 import javax.swing.text.html.Option;
 import java.lang.reflect.Field;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static ru.enedinae.notes.enumeration.NoteStatus.CLOSED;
@@ -160,7 +158,7 @@ public class CommandLineUiImpl implements UserInterface {
         System.out.printf("Колличество заметок у вас - %d\n", notesService.getAllNotes().size());
         notesService.getAllNotes().stream().sorted(NOTE_BY_STATUS_COMPARATOR).forEach(e-> {
             count.getAndIncrement();
-            System.out.printf(count+"."+e.getName()+" - "+e.getStatus()+" (id: %d)\n", e.getId());
+            System.out.print(count+"."+e);
         });
     }
 
@@ -175,19 +173,21 @@ public class CommandLineUiImpl implements UserInterface {
                             Integer nameId = Integer.parseInt(scanner.nextLine());
                             notesService.getNoteById(nameId).ifPresentOrElse(
                                     System.out::println,
-                                    ()-> System.out.println("Заметки c такми ID не существует.\n")
+                                    ()-> System.out.println("Заметки c таким ID не существует.")
                             );
                         } catch (Exception e) {
-                            System.out.println("Не корректное ID.\n");
+                            System.out.println("Не корректное ID.");
                         }
                         break;
                     case "2":
                         System.out.print("Введите имя: ");
                         String name = scanner.nextLine();
-                        notesService.getNoteByName(name).ifPresentOrElse(
-                                System.out::println,
-                                ()-> System.out.println("Заметки с таким именем не существует.\n")
-                        );
+                        List<Note> noteByName = notesService.getNoteByName(name);
+                        if(!noteByName.isEmpty()) {
+                            noteByName.forEach(System.out::print);
+                        } else {
+                            System.out.println("Заметки c таким именем не существует.");
+                        }
                         break;
                     case "3":
                         return;
