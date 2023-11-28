@@ -63,11 +63,10 @@ public class Note {
     public String toString() {
         StringBuilder noteInfo = new StringBuilder();
         if(Objects.nonNull(name) && !name.isBlank()) {
-            noteInfo.append("Заметка - ").append(name);
+            noteInfo.append(name).append(" - ").append(status).append(" (id: ").append(id).append(")\n");
         } else {
             noteInfo.append("'not name' - ").append(name);
         }
-        noteInfo.append(" (id - ").append(id).append(", ").append("статус - ").append(status).append(")\n");
         if(Objects.nonNull(description) && !description.isBlank()){
             noteInfo.append("Описание: ").append(description).append("\n");
         }

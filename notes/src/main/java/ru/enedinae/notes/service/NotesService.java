@@ -9,7 +9,7 @@ public interface NotesService {
     Note createNote(String name, String desc, String deadLine);
     List<Note> getAllNotes();
     Optional<Note> getNoteById(Integer id);
-    Optional<Note> getNoteByName(String name);
+    Optional<List<Note>> getNoteByName(String name);
     boolean deleteNoteById(Integer id);
     boolean updateNote(Note updateNote);
 }

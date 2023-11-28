@@ -27,8 +27,10 @@ public class InMemoryNotesServiceImpl implements NotesService {
         return notes.stream().filter(note -> Objects.equals(note.getId(), id)).findFirst();
     }
 
-    public Optional<Note> getNoteByName(String name) {
-        return notes.stream().filter(note -> Objects.equals(note.getName(), name)).findFirst();
+    public Optional<List<Note>> getNoteByName(String name) {
+        List<Note> newNotes = new ArrayList<>();
+        newNotes.add((Note) notes.stream().filter(note -> Objects.equals(note.getName(), name)));
+        return Optional.ofNullable(newNotes);
     }
 
     public boolean deleteNoteById(Integer id) {

@@ -11,7 +11,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class NotesServiceJdbcImpl implements NotesService {
-
     private final NoteRepository repository;
 
     public NotesServiceJdbcImpl(NoteRepository repository) {
@@ -32,7 +31,7 @@ public class NotesServiceJdbcImpl implements NotesService {
         return Optional.ofNullable(repository.selectById(id));
     }
 
-    public Optional<Note> getNoteByName(String name) {
+    public Optional<List<Note>> getNoteByName(String name) {
         return Optional.ofNullable(repository.selectByName(name));
     }
 

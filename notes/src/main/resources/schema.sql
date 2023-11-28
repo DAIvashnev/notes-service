@@ -3,7 +3,7 @@ id BIGSERIAL PRIMARY KEY NOT NULL,
 name VARCHAR(50),
 description VARCHAR(500),
 deadline VARCHAR(50),
-status VARCHAR(6) NOT NULL,
+status VARCHAR(7) NOT NULL,
 create_time TIMESTAMPTZ(0) NOT NULL,
 update_time TIMESTAMPTZ(0) NOT NULL
 );

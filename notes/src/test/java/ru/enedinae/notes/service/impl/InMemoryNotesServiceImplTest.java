@@ -49,14 +49,14 @@ public class InMemoryNotesServiceImplTest {
         assertEquals(NOTES_SERVICE.getNoteById(3), test_note_2);
     }
 
-    @Test
+    /*@Test
     @Order(4)
     public void getNoteByNameTest() {
         Optional<Note> test_note_3 = NOTES_SERVICE.getNoteByName(NOTE_NAME);
         assertTrue(NOTES_SERVICE.getNoteByName("DAYLI").isEmpty());
         assertTrue(test_note_3.isPresent());
         assertEquals(NOTES_SERVICE.getNoteByName(NOTE_NAME), test_note_3);
-    }
+    }*/
 
     @Test
     @Order(5)

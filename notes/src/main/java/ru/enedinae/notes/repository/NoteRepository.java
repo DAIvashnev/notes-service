@@ -9,7 +9,7 @@ public interface NoteRepository {
     void insertNote(Note note);
     List<Note> selectAll();
     Note selectById(Integer id);
-    Note selectByName(String name);
+    List<Note> selectByName(String name);
     int deleteById(Integer id);
     boolean updateNote(Note updateNote);
 
