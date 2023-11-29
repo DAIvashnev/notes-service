@@ -16,10 +16,10 @@ public class NoteRepositoryImpl implements NoteRepository {
     private final NoteMapper noteMapper;
     private static final String INSERT = "INSERT INTO notes (name, description, deadline, status, create_time, update_time) " +
             "VALUES(?, ?, ?, ?, now(), now())";
-    private static final String SELECT_ALL = "SELECT * FROM notes";
+    private static final String SELECT_ALL = "SELECT * FROM notes WHERE status NOT LIKE 'DELETED'";
     private static final String SELECT_BY_ID = "SELECT * FROM notes WHERE id = ?";
     private static final String SELECT_BY_NAME = "SELECT * FROM notes WHERE name LIKE ?";
-    private static final String DELETE_BY_ID = "DELETE FROM notes WHERE id = ?";
+    private static final String DELETE_BY_ID = "UPDATE notes SET status = 'DELETED', update_time = now() WHERE id = ?";
     private static final String UPDATE_NOTES = "UPDATE notes SET name = ?, status = ?, description = ?, deadline = ?, update_time = now() WHERE id = ?";
 
     public NoteRepositoryImpl(DataBaseManager dataBaseManager, NoteMapper noteMapper) {
