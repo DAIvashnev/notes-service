@@ -17,6 +17,8 @@ public class NoteMapper {
                 Note note = new Note();
                 note.setId(resultSet.getInt("id"));
                 note.setName(resultSet.getString("name"));
+                note.setDescription(resultSet.getString("description"));
+                note.setDeadline(resultSet.getString("deadline"));
                 note.setStatus(NoteStatus.valueOf(resultSet.getString("status")));
                 notes.add(note);
             }

@@ -1,5 +1,5 @@
 package ru.enedinae.notes.enumeration;
 
 public enum NoteStatus {
-    NEW, CLOSED, DELETED
+    NEW, CLOSED, DELETED, DELAY
 }

@@ -1,17 +1,17 @@
 package ru.enedinae.notes.ui.impl;
 
-import ru.enedinae.notes.db.DataBaseManager;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.service.NotesService;
 import ru.enedinae.notes.ui.UserInterface;
 
-import javax.swing.text.html.Option;
-import java.lang.reflect.Field;
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static ru.enedinae.notes.enumeration.NoteStatus.CLOSED;
-import static ru.enedinae.notes.enumeration.NoteStatus.NEW;
+import static ru.enedinae.notes.enumeration.NoteStatus.*;
 
 public class CommandLineUiImpl implements UserInterface {
     private final NotesService notesService;
@@ -32,6 +32,7 @@ public class CommandLineUiImpl implements UserInterface {
 
     public void start() {
         while (true) {
+            checkDeadline();
             System.out.println("\nСделайте выбор:\n\n"+"1 - Создать новую заметку.\n"+"2 - Удалить заметку.\n"+
                     "3 - Обновить заметку.\n"+"4 - Ваши заметки.\n"+"5 - Информация о заметке.\n"+"6 - Обновить интерфейс.\n"+"\n0 - Exit");
             switch (scanner.nextLine()) {
@@ -67,7 +68,7 @@ public class CommandLineUiImpl implements UserInterface {
         String name = scanner.nextLine();
         System.out.print("Содержание: ");
         String description = scanner.nextLine();
-        System.out.print("Срок выполнения: ");
+        System.out.print("Срок выполнения \"гггг-мм-дд\": ");
         String deadline = scanner.nextLine();
         System.out.printf("Заметка успешно создана! id заметки - %s\n",
                 notesService.createNote(name,description,deadline).getId());
@@ -84,6 +85,9 @@ public class CommandLineUiImpl implements UserInterface {
                         try {
                             Integer nameId = Integer.parseInt(scanner.nextLine());
                             if (notesService.deleteNoteById(nameId)) {
+                                Note note = notesService.getNoteById(nameId).get();
+                                note.setStatus(DELETED);
+                                notesService.updateNote(note);
                                 System.out.println("Заметка успешно удалена.");
                                 return;
                             } else {
@@ -158,7 +162,7 @@ public class CommandLineUiImpl implements UserInterface {
         System.out.printf("Колличество заметок у вас - %d\n", notesService.getAllNotes().size());
         notesService.getAllNotes().stream().sorted(NOTE_BY_STATUS_COMPARATOR).forEach(e-> {
             count.getAndIncrement();
-            System.out.print(count+"."+e);
+            System.out.print(count+"."+e.getName()+" - "+e.getStatus()+" (id: "+e.getId()+")\n");
         });
     }
 
@@ -184,7 +188,7 @@ public class CommandLineUiImpl implements UserInterface {
                         String name = scanner.nextLine();
                         List<Note> noteByName = notesService.getNoteByName(name);
                         if(!noteByName.isEmpty()) {
-                            noteByName.forEach(System.out::print);
+                            noteByName.forEach(System.out::println);
                         } else {
                             System.out.println("Заметки c таким именем не существует.");
                         }
@@ -199,6 +203,19 @@ public class CommandLineUiImpl implements UserInterface {
         } else {
             System.out.println("У вас нет заметок.");
         }
+    }
+
+    private void checkDeadline() {
+        List<Note> notes = notesService.getAllNotes();
+        notes.forEach(note -> {
+                try {
+                    if ((LocalDate.now()).isAfter(LocalDate.parse(note.getDeadline()))) {
+                        note.setStatus(DELAY);
+                        notesService.updateNote(note);
+                        System.out.printf("\nЗаметка - \"%s\" просрочена.\n", note.getName());
+                    }
+                } catch (DateTimeException e) {}
+        });
     }
 
     private void exit() {
