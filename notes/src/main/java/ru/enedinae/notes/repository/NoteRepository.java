@@ -12,5 +12,5 @@ public interface NoteRepository {
     List<Note> selectByName(String name);
     int deleteById(Integer id);
     boolean updateNote(Note updateNote);
-
+    void checkDeadline();
 }

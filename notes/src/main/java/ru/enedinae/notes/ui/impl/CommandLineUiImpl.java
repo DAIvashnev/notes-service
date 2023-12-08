@@ -4,9 +4,11 @@ import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.service.NotesService;
 import ru.enedinae.notes.ui.UserInterface;
 
+import javax.swing.plaf.TableHeaderUI;
 import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,11 +30,22 @@ public class CommandLineUiImpl implements UserInterface {
 
     public CommandLineUiImpl(NotesService notesService) {
         this.notesService = notesService;
+        Runnable checkDeadline = () -> {
+            try {
+                while (true) {
+                    notesService.checkDeadline();
+                    Thread.sleep(60000);
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        Thread thread = new Thread(checkDeadline);
+        thread.start();
     }
 
     public void start() {
         while (true) {
-            checkDeadline();
             System.out.println("\nСделайте выбор:\n\n"+"1 - Создать новую заметку.\n"+"2 - Удалить заметку.\n"+
                     "3 - Обновить заметку.\n"+"4 - Ваши заметки.\n"+"5 - Информация о заметке.\n"+"6 - Обновить интерфейс.\n"+"\n0 - Exit");
             switch (scanner.nextLine()) {
@@ -68,7 +81,7 @@ public class CommandLineUiImpl implements UserInterface {
         String name = scanner.nextLine();
         System.out.print("Содержание: ");
         String description = scanner.nextLine();
-        System.out.print("Срок выполнения \"гггг-мм-дд\": ");
+        System.out.print("Срок выполнения \"гггг-мм-дд чч:мм\": ");
         String deadline = scanner.nextLine();
         System.out.printf("Заметка успешно создана! id заметки - %s\n",
                 notesService.createNote(name,description,deadline).getId());
@@ -133,7 +146,7 @@ public class CommandLineUiImpl implements UserInterface {
                                 note.setDescription(scanner.nextLine());
                                 break;
                             case "4":
-                                System.out.println("Введите новый срок выполнения: ");
+                                System.out.println("Введите новый срок выполнения \"гггг-мм-дд чч:мм\": ");
                                 note.setDeadline(scanner.nextLine());
                                 break;
                             case "5":
@@ -203,19 +216,6 @@ public class CommandLineUiImpl implements UserInterface {
         } else {
             System.out.println("У вас нет заметок.");
         }
-    }
-
-    private void checkDeadline() {
-        List<Note> notes = notesService.getAllNotes();
-        notes.forEach(note -> {
-                try {
-                    if ((LocalDate.now()).isAfter(LocalDate.parse(note.getDeadline()))) {
-                        note.setStatus(DELAY);
-                        notesService.updateNote(note);
-                        System.out.printf("\nЗаметка - \"%s\" просрочена.\n", note.getName());
-                    }
-                } catch (DateTimeException e) {}
-        });
     }
 
     private void exit() {

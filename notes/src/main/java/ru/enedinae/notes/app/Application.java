@@ -8,9 +8,16 @@ import ru.enedinae.notes.service.impl.InMemoryNotesServiceImpl;
 import ru.enedinae.notes.service.impl.NotesServiceJdbcImpl;
 import ru.enedinae.notes.ui.impl.CommandLineUiImpl;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import javax.tools.DocumentationTool;
 import java.time.LocalDate;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static ru.enedinae.notes.enumeration.NoteStatus.EXPIRED;
 
 public class Application {
     public static void main(String[] args)  {

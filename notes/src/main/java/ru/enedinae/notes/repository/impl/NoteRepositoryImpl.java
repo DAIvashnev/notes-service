@@ -5,6 +5,7 @@ import ru.enedinae.notes.mapper.NoteMapper;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.repository.NoteRepository;
 
+import javax.net.ssl.SSLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +22,8 @@ public class NoteRepositoryImpl implements NoteRepository {
     private static final String SELECT_BY_NAME = "SELECT * FROM notes WHERE name LIKE ?";
     private static final String DELETE_BY_ID = "UPDATE notes SET status = 'DELETED', update_time = now() WHERE id = ?";
     private static final String UPDATE_NOTES = "UPDATE notes SET name = ?, status = ?, description = ?, deadline = ?, update_time = now() WHERE id = ?";
+    private static final String CHECK_DEADLINE =
+            "UPDATE notes SET status = 'EXPIRED', update_time = now() WHERE status != 'EXPIRED' and deadline != '' and TIMESTAMPTZ(deadline) < CURRENT_TIMESTAMP;";
 
     public NoteRepositoryImpl(DataBaseManager dataBaseManager, NoteMapper noteMapper) {
         this.dataBaseManager = dataBaseManager;
@@ -97,6 +100,14 @@ public class NoteRepositoryImpl implements NoteRepository {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public void checkDeadline() {
+        try(PreparedStatement preparedStatement = dataBaseManager.getConnection().prepareStatement(CHECK_DEADLINE)) {
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
