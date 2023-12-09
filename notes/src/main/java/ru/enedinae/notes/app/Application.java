@@ -10,17 +10,21 @@ import ru.enedinae.notes.ui.impl.CommandLineUiImpl;
 
 import javax.swing.plaf.synth.SynthOptionPaneUI;
 import javax.tools.DocumentationTool;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.enedinae.notes.enumeration.NoteStatus.EXPIRED;
+import static ru.enedinae.notes.enumeration.NoteStatus.valueOf;
 
 public class Application {
     public static void main(String[] args)  {
+        new CheckDeadline().start();
         new CommandLineUiImpl(resolveService(args[0])).start();
     }
 
@@ -32,4 +36,19 @@ public class Application {
         }
         throw new IllegalArgumentException("Нет такого выбора");
     }
+    private static class CheckDeadline extends Thread {
+        NoteRepositoryImpl repository = new NoteRepositoryImpl(new DataBaseManager(), new NoteMapper());
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    repository.checkDeadline();
+                    Thread.sleep(60000);
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 }

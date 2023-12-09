@@ -12,5 +12,4 @@ public interface NotesService {
     List<Note> getNoteByName(String name);
     boolean deleteNoteById(Integer id);
     boolean updateNote(Note updateNote);
-    void checkDeadline();
 }
