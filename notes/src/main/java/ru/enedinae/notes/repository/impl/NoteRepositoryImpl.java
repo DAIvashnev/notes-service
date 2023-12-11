@@ -1,17 +1,18 @@
 package ru.enedinae.notes.repository.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.enedinae.notes.db.DataBaseManager;
 import ru.enedinae.notes.mapper.NoteMapper;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.repository.NoteRepository;
-
-import javax.net.ssl.SSLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+@Component
 public class NoteRepositoryImpl implements NoteRepository {
     private final DataBaseManager dataBaseManager;
     private final NoteMapper noteMapper;
@@ -24,7 +25,7 @@ public class NoteRepositoryImpl implements NoteRepository {
     private static final String UPDATE_NOTES = "UPDATE notes SET name = ?, status = ?, description = ?, deadline = ?, update_time = now() WHERE id = ?";
     private static final String CHECK_DEADLINE =
             "UPDATE notes SET status = 'EXPIRED', update_time = now() WHERE status != 'EXPIRED' and deadline != '' and TIMESTAMPTZ(deadline) < CURRENT_TIMESTAMP;";
-
+    @Autowired
     public NoteRepositoryImpl(DataBaseManager dataBaseManager, NoteMapper noteMapper) {
         this.dataBaseManager = dataBaseManager;
         this.noteMapper = noteMapper;

@@ -1,5 +1,8 @@
 package ru.enedinae.notes.db;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -7,6 +10,7 @@ import java.nio.file.Path;
 import java.sql.*;
 import java.util.Properties;
 
+@Component
 public class DataBaseManager {
     private final String URL;
     private final String USER;
@@ -14,6 +18,7 @@ public class DataBaseManager {
     private final Properties properties;
     private String schemaSql;
 
+    @Autowired
     public DataBaseManager() {
         properties = new Properties();
         try (InputStream propertyInputStream = DataBaseManager.class.getClassLoader().getResourceAsStream("db.properties")) {

@@ -1,14 +1,16 @@
 package ru.enedinae.notes.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.repository.NoteRepository;
 import ru.enedinae.notes.service.NotesService;
 import java.util.List;
 import java.util.Optional;
-
+@Component
 public class NotesServiceJdbcImpl implements NotesService {
     private final NoteRepository repository;
-
+    @Autowired
     public NotesServiceJdbcImpl(NoteRepository repository) {
         this.repository = repository;
     }

@@ -1,24 +1,19 @@
 package ru.enedinae.notes.ui.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.service.NotesService;
 import ru.enedinae.notes.ui.UserInterface;
-
-import javax.swing.plaf.TableHeaderUI;
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
-import java.time.temporal.ValueRange;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
 import static ru.enedinae.notes.enumeration.NoteStatus.*;
 
+@Component("ui")
 public class CommandLineUiImpl implements UserInterface {
     private final NotesService notesService;
     private final Scanner scanner = new Scanner(System.in);
@@ -32,6 +27,7 @@ public class CommandLineUiImpl implements UserInterface {
       }
     };
 
+    @Autowired
     public CommandLineUiImpl(NotesService notesService) {
         this.notesService = notesService;
     }
