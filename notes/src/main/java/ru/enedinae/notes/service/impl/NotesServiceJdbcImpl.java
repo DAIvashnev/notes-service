@@ -1,56 +1,40 @@
 package ru.enedinae.notes.service.impl;
 
 import ru.enedinae.notes.model.Note;
-import ru.enedinae.notes.repository.Repository;
-import ru.enedinae.notes.service.NotesServiceJdbc;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import ru.enedinae.notes.repository.NoteRepository;
+import ru.enedinae.notes.service.NotesService;
+import java.util.List;
 import java.util.Optional;
 
-public class NotesServiceJdbcImpl implements NotesServiceJdbc {
-    private Repository noteRepository;
+public class NotesServiceJdbcImpl implements NotesService {
+    private final NoteRepository repository;
 
-    /*public NotesServiceJdbcImpl(Repository noteRepository) {
-        this.noteRepository = noteRepository;
-    }*/
-
-    public boolean insertNote() {
-        return false;
+    public NotesServiceJdbcImpl(NoteRepository repository) {
+        this.repository = repository;
     }
 
-    public Optional<Note> selectById(Integer id) {
-        return Optional.empty();
+    public Note createNote(String name, String desc, String deadLine) {
+        Note note = new Note(name, desc, deadLine);
+        repository.insertNote(note);
+        return note;
     }
 
-    public Optional<Note> selectByName(String name) {
-        return Optional.empty();
+    public List<Note> getAllNotes() {
+        return repository.selectAll();
     }
 
-    public boolean deleteById(Integer id) {
-        return false;
+    public Optional<Note> getNoteById(Integer id) {
+        return Optional.ofNullable(repository.selectById(id));
     }
 
-    public boolean deleteByName(String name) {
-        return false;
+    public List<Note> getNoteByName(String name) { return repository.selectByName(name);
     }
 
-    public boolean updateNote(String date) {
-        return false;
+    public boolean deleteNoteById(Integer id) {
+        return repository.deleteById(id) != 0;
     }
 
-    public void selectAllNotes(ResultSet rs) {
-        try {
-            while (rs.next()) {
-                System.out.println(rs.getString("id") + " "
-                        + rs.getString("name") + " "
-                        + rs.getString("description") + " "
-                        + rs.getString("deadline") + " "
-                        + rs.getTimestamp("create_time") + " "
-                        + rs.getTimestamp("update_time"));
-            }
-        }catch (SQLException e) {
-            System.out.println(e);
-        }
+    public boolean updateNote(Note updateNote) {
+        return repository.updateNote(updateNote);
     }
 }

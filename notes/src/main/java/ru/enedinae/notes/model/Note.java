@@ -10,11 +10,12 @@ public class Note {
     private String deadline;
     private NoteStatus status;
 
+    public Note() {}
+
     public Note(String name, String description, String deadline) {
-        this.id = NotesIdsGenerator.getInstance().generateId();
-        this.name = name;
-        this.description = description;
-        this.deadline = deadline;
+        this.name = name.length()>50 ? name.substring(0, 50) : name;
+        this.description = description.length()>500 ? description.substring(0, 500) : description;
+        this.deadline = deadline.length()>50 ? deadline.substring(0, 50) : deadline;
         this.status = NoteStatus.NEW;
     }
 
@@ -62,16 +63,15 @@ public class Note {
     public String toString() {
         StringBuilder noteInfo = new StringBuilder();
         if(Objects.nonNull(name) && !name.isBlank()) {
-            noteInfo.append("Заметка - ").append(name);
+            noteInfo.append(name).append(" - ").append(status).append(" (id: ").append(id).append(")\n");
         } else {
             noteInfo.append("'not name' - ").append(name);
         }
-        noteInfo.append(" (id - ").append(id).append(", ").append("статус - ").append(status).append(")\n");
         if(Objects.nonNull(description) && !description.isBlank()){
-            noteInfo.append("Описание: ").append(description);
+            noteInfo.append("Описание: ").append(description).append("\n");
         }
         if(Objects.nonNull(deadline) && !deadline.isBlank()) {
-            noteInfo.append("\nСрок выполнения до - ").append(deadline).append("\n");
+            noteInfo.append("Срок выполнения до - ").append(deadline).append("\n");
         }
         return noteInfo.toString();
     }

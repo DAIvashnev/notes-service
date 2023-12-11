@@ -1,6 +1,7 @@
 package ru.enedinae.notes.service.impl;
 
 import ru.enedinae.notes.model.Note;
+import ru.enedinae.notes.model.NotesIdsGenerator;
 import ru.enedinae.notes.service.NotesService;
 
 import java.util.ArrayList;
@@ -13,12 +14,12 @@ public class InMemoryNotesServiceImpl implements NotesService {
 
     public Note createNote(String name, String desc, String deadLine) {
         Note note = new Note(name,desc,deadLine);
+        note.setId(NotesIdsGenerator.getInstance().generateId());
         notes.add(note);
         return note;
     }
 
     public List<Note> getAllNotes() {
-
         return notes;
     }
 
@@ -26,16 +27,14 @@ public class InMemoryNotesServiceImpl implements NotesService {
         return notes.stream().filter(note -> Objects.equals(note.getId(), id)).findFirst();
     }
 
-    public Optional<Note> getNoteByName(String name) {
-        return notes.stream().filter(note -> Objects.equals(note.getName(), name)).findFirst();
+    public List<Note> getNoteByName(String name) {
+        List<Note> newNotes = new ArrayList<>();
+        newNotes.add((Note) notes.stream().filter(note -> Objects.equals(note.getName(), name)));
+        return newNotes;
     }
 
     public boolean deleteNoteById(Integer id) {
         return notes.removeIf(note -> note.getId().equals(id));
-    }
-
-    public boolean deleteNoteByName(String name) {
-        return notes.removeIf(note -> note.getName().equals(name));
     }
 
     public boolean updateNote(Note updateNote) {

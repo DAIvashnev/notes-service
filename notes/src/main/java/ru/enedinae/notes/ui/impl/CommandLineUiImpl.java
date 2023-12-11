@@ -1,21 +1,23 @@
 package ru.enedinae.notes.ui.impl;
 
-import ru.enedinae.notes.service.NotesService;
-import ru.enedinae.notes.service.NotesServiceJdbc;
-import ru.enedinae.notes.ui.UserInterface;
 import ru.enedinae.notes.model.Note;
+import ru.enedinae.notes.service.NotesService;
+import ru.enedinae.notes.ui.UserInterface;
 
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.Scanner;
+import javax.swing.plaf.TableHeaderUI;
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
+import java.time.temporal.ValueRange;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static ru.enedinae.notes.enumeration.NoteStatus.CLOSED;
-import static ru.enedinae.notes.enumeration.NoteStatus.NEW;
-
-// отладить меню - menuDell()
-// переработать updateNote()
-
+import static ru.enedinae.notes.enumeration.NoteStatus.*;
 
 public class CommandLineUiImpl implements UserInterface {
     private final NotesService notesService;
@@ -35,6 +37,7 @@ public class CommandLineUiImpl implements UserInterface {
     }
 
     public void start() {
+        clearWindow();
         while (true) {
             System.out.println("\nСделайте выбор:\n\n"+"1 - Создать новую заметку.\n"+"2 - Удалить заметку.\n"+
                     "3 - Обновить заметку.\n"+"4 - Ваши заметки.\n"+"5 - Информация о заметке.\n"+"\n0 - Exit");
@@ -58,36 +61,47 @@ public class CommandLineUiImpl implements UserInterface {
                     exit();
                     break;
                 default:
+                    clearWindow();
                     System.out.print("Нет такой команды. Введите номер команды показанный на экране."); break;
             }
         }
     }
 
     private void addNote() {
+        clearWindow();
         System.out.print("Имя вашей заметки: ");
         String name = scanner.nextLine();
         System.out.print("Содержание: ");
-        String infoNote = scanner.nextLine();
-        System.out.print("Срок выполнения: ");
-        String deadline = scanner.nextLine();
-        System.out.printf("Заметка успешно создана! id заметки - %s\n",
-                notesService.createNote(name,infoNote,deadline).getId());
+        String description = scanner.nextLine();
+        String deadline = validationDateTime();
+        if(deadline != null) {
+            clearWindow();
+            System.out.printf("Заметка успешно создана! id заметки - %s\n",
+                    notesService.createNote(name,description,deadline).getId());
+        } else {
+            clearWindow();
+            System.out.println("Не корректный формат даты.");
+        }
     }
 
     private void menuDell() {
+        clearWindow();
         if(!notesService.getAllNotes().isEmpty()) {
             while(true) {
-                System.out.println("По какому критерию вести поиск удаления?:\n1 - Удалить по id.\n2 - Удалить по имени.\n3 - Отменить");
+                allNotes();
+                System.out.println("\n1 - Ввести ID заметки для удаления.\n2 - Отменить");
                 switch (scanner.nextLine()) {
                     case "1":
                         System.out.print("Введите id: ");
-
-                        // отладить вызовы
-
                         try {
                             Integer nameId = Integer.parseInt(scanner.nextLine());
                             if (notesService.deleteNoteById(nameId)) {
+                                Note note = notesService.getNoteById(nameId).get();
+                                note.setStatus(DELETED);
+                                notesService.updateNote(note);
+                                clearWindow();
                                 System.out.println("Заметка успешно удалена.");
+                                return;
                             } else {
                                 System.out.println("Заметки c такми ID не существует.\n");
                             }
@@ -96,16 +110,10 @@ public class CommandLineUiImpl implements UserInterface {
                         }
                         break;
                     case "2":
-                        System.out.print("Введите имя: ");
-                        if (notesService.deleteNoteByName(scanner.nextLine())) {
-                            System.out.println("Заметка успешно удалена.");
-                        } else {
-                            System.out.println("Заметки с таким именем не существует.\n");
-                        }
-                        break;
-                    case "3":
+                        clearWindow();
                         return;
                     default:
+                        clearWindow();
                         System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
                         break;
                 }
@@ -116,56 +124,83 @@ public class CommandLineUiImpl implements UserInterface {
     }
 
     private void updateNote() {
+        clearWindow();
         if(!notesService.getAllNotes().isEmpty()) {
-            System.out.println("Вот список ваших заметок. Введите имя заметки которую хотите изменить?");
-            notesService.getAllNotes().forEach(e-> System.out.println(e.getName()));
-            String name = scanner.nextLine();
-            Optional<Note> checkNote = notesService.getNoteByName(name);
-            if (checkNote.isPresent()) {
-                Note newNote = notesService.getAllNotes().stream().filter(e->e.getName().equals(name)).findFirst().get();
-                System.out.println("Выберите, что хотите изменить:\n1 - Имя\n2 - Заметка выполнена\n3 - Содержание\n4 - Срок выполнния\n5 - Отменить");
-                switch (scanner.nextLine()) {
-                    case "1" :
-                        System.out.println("Введите новое имя: ");
-                        newNote.setName(scanner.nextLine());
-                        break;
-                    case "2" :
-                        newNote.setStatus(CLOSED);
-                        break;
-                    case "3" :
-                        System.out.println("Введите новое содержание: ");
-                        newNote.setDescription(scanner.nextLine());
-                        break;
-                    case "4" :
-                        System.out.println("Введите новый срок выполнения: ");
-                        newNote.setDeadline(scanner.nextLine());
-                        break;
-                    case "5" :
+            while(true) {
+                allNotes();
+                System.out.println("\nВот список ваших заметок. Введите ID заметки которую хотите изменить?\n0 - Отменить.");
+                try {
+                    String name = scanner.nextLine();
+                    if(name.equals("0"))  {
+                        clearWindow();
                         return;
-                    default :
-                        System.out.println("Нет такой команды.");
+                    }
+                    Optional<Note> newNote = notesService.getNoteById(Integer.parseInt(name));
+                    if (newNote.isPresent()) {
+                        Note note = newNote.get();
+                        clearWindow();
+                        System.out.println("Выберите, что хотите изменить:\n1 - Имя\n2 - Заметка выполнена\n3 - Содержание\n4 - Срок выполнния\n5 - Отменить");
+                        switch (scanner.nextLine()) {
+                            case "1":
+                                System.out.println("Введите новое имя: ");
+                                note.setName(scanner.nextLine());
+                                break;
+                            case "2":
+                                note.setStatus(CLOSED);
+                                break;
+                            case "3":
+                                System.out.println("Введите новое содержание: ");
+                                note.setDescription(scanner.nextLine());
+                                break;
+                            case "4":
+                                String deadline = validationDateTime();
+                                if(deadline != null) {
+                                    note.setDeadline(deadline);
+                                } else {
+                                    clearWindow();
+                                    System.out.println("Не корректный формат даты.");
+                                    return;
+                                }
+                                break;
+                            case "5":
+                                clearWindow();
+                                return;
+                            default:
+                                clearWindow();
+                                System.out.println("Нет такой команды.");
+                                return;
+                        }
+                        clearWindow();
+                        System.out.println("Заметка успешно обновлена!");
+                        notesService.updateNote(note);
                         return;
+                    } else {
+                        clearWindow();
+                        System.out.println("Заметки с таким ID нет.\n");
+                    }
+                } catch (Exception e) {
+                    clearWindow();
+                    System.out.println("Не корректное ID.\n");
                 }
-                System.out.println("Заметка успешно обновлена!");
-                notesService.updateNote(newNote);
-            } else {
-                System.out.println("Заметки с таким именем нет.");
             }
         } else {
+            clearWindow();
             System.out.println("У вас нет заметок.");
         }
     }
 
     private void allNotes() {
         AtomicInteger count = new AtomicInteger(0);
-        System.out.printf("Колличество заметок у вас - %d\n", notesService.getAllNotes().size());
+        System.out.println("Вот список ваших заметок:");
         notesService.getAllNotes().stream().sorted(NOTE_BY_STATUS_COMPARATOR).forEach(e-> {
             count.getAndIncrement();
-            System.out.println(count+"."+e.getName()+" - "+e.getStatus());
+            System.out.print(count+"."+e.getName()+" - "+e.getStatus()+" (id: "+e.getId()+")\n");
         });
     }
 
     private void infoByNote() {
+        clearWindow();
+        allNotes();
         if(!notesService.getAllNotes().isEmpty()) {
             while(true) {
                 System.out.println("\nПо какому критерию вести поиск заметки?:\n1 - Найти по id.\n2 - Найти по имени.\n3 - Отменить");
@@ -176,30 +211,54 @@ public class CommandLineUiImpl implements UserInterface {
                             Integer nameId = Integer.parseInt(scanner.nextLine());
                             notesService.getNoteById(nameId).ifPresentOrElse(
                                     System.out::println,
-                                    ()-> System.out.println("Заметки c такми ID не существует.\n")
+                                    ()-> System.out.println("Заметки c таким ID не существует.")
                             );
                         } catch (Exception e) {
-                            System.out.println("Не корректное ID.\n");
+                            System.out.println("Не корректное ID.");
                         }
                         break;
                     case "2":
                         System.out.print("Введите имя: ");
                         String name = scanner.nextLine();
-                        notesService.getNoteByName(name).ifPresentOrElse(
-                                System.out::println,
-                                ()-> System.out.println("Заметки с таким именем не существует.\n")
-                        );
+                        List<Note> noteByName = notesService.getNoteByName(name);
+                        if(!noteByName.isEmpty()) {
+                            noteByName.forEach(System.out::println);
+                        } else {
+                            System.out.println("Заметки c таким именем не существует.");
+                        }
                         break;
                     case "3":
+                        clearWindow();
                         return;
                     default:
+                        clearWindow();
                         System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
                         break;
                 }
             }
         } else {
+            clearWindow();
             System.out.println("У вас нет заметок.");
         }
+    }
+
+    private String validationDateTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withResolverStyle(ResolverStyle.SMART);
+        System.out.print("\nСрок выполнения заметки.\nЕсли хотите продолжить без заполнения даты, нажмите 'Enter'.\nВведиде дату в формате 'гггг-мм-дд чч:мм': ");
+        String dataInput = scanner.nextLine();
+        if(dataInput.isEmpty()) {
+            return "";
+        }
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(dataInput, formatter);
+            return dateTime.toString().replace("T", " ");
+        } catch (DateTimeException e) {
+            return null;
+        }
+    }
+
+    private void clearWindow() {
+        System.out.print("\033[H\033[J");
     }
 
     private void exit() {
