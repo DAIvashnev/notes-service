@@ -36,6 +36,7 @@ public class Application {
         }
         throw new IllegalArgumentException("Нет такого выбора");
     }
+
     private static class CheckDeadline extends Thread {
         NoteRepositoryImpl repository = new NoteRepositoryImpl(new DataBaseManager(), new NoteMapper());
         @Override
