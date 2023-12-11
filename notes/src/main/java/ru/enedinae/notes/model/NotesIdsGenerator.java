@@ -1,4 +1,4 @@
-package notes.models;
+package ru.enedinae.notes.model;
 
 public class NotesIdsGenerator {
     private int id = 0;
