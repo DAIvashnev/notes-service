@@ -1,5 +1,6 @@
 package ru.enedinae.notes.mapper;
 
+import org.springframework.stereotype.Component;
 import ru.enedinae.notes.enumeration.NoteStatus;
 import ru.enedinae.notes.model.Note;
 
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Component
 public class NoteMapper {
     public List<Note> map(ResultSet resultSet) {
         List<Note> notes = new ArrayList<>();
