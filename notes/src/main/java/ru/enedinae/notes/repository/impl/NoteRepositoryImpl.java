@@ -13,7 +13,7 @@ import java.sql.Statement;
 import java.util.List;
 
 @Component
-public class NoteRepositoryImpl implements NoteRepository {
+public class NoteRepositoryImpl implements NoteRepository{
     private final DataBaseManager dataBaseManager;
     private final NoteMapper noteMapper;
     private static final String INSERT = "INSERT INTO notes (name, description, deadline, status, create_time, update_time) " +

@@ -1,38 +1,25 @@
 package ru.enedinae.notes.db;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.*;
-import java.util.Properties;
 
 @Component
 public class DataBaseManager {
-    private final String URL;
-    private final String USER;
-    private final String PASSWORD;
-    private final Properties properties;
+    @Value("${db.url}")
+    private String URL;
+    @Value("${db.user}")
+    private String USER;
+    @Value("${db.password}")
+    private String PASSWORD;
     private String schemaSql;
 
-    @Autowired
-    public DataBaseManager() {
-        properties = new Properties();
-        try (InputStream propertyInputStream = DataBaseManager.class.getClassLoader().getResourceAsStream("db.properties")) {
-            properties.load(propertyInputStream);
-            URL = properties.getProperty("db.url");
-            USER = properties.getProperty("db.user");
-            PASSWORD = properties.getProperty("db.password");
-            executeInitScript();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public Connection getConnection() {
+        executeInitScript();
         try {
             return DriverManager.getConnection(URL,USER,PASSWORD);
         } catch (SQLException e) {
@@ -42,7 +29,7 @@ public class DataBaseManager {
 
     private void executeInitScript() {
         try (
-                Connection connection = getConnection();
+                Connection connection = DriverManager.getConnection(URL,USER,PASSWORD);
                 InputStream schemaInputStream =  DataBaseManager.class.getClassLoader().getResourceAsStream("schema.sql")) {
             Statement statement = connection.createStatement();
             schemaSql = new String(schemaInputStream.readAllBytes(), StandardCharsets.UTF_8);

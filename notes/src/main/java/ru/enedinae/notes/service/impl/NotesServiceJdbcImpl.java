@@ -29,8 +29,7 @@ public class NotesServiceJdbcImpl implements NotesService {
         return Optional.ofNullable(repository.selectById(id));
     }
 
-    public List<Note> getNoteByName(String name) { return repository.selectByName(name);
-    }
+    public List<Note> getNoteByName(String name) { return repository.selectByName(name); }
 
     public boolean deleteNoteById(Integer id) {
         return repository.deleteById(id) != 0;
@@ -39,4 +38,6 @@ public class NotesServiceJdbcImpl implements NotesService {
     public boolean updateNote(Note updateNote) {
         return repository.updateNote(updateNote);
     }
+
+    public void checkDeadline() { repository.checkDeadline(); };
 }

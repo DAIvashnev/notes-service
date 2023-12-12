@@ -36,6 +36,7 @@ public class CommandLineUiImpl implements UserInterface {
     }
 
     public void start() {
+        new CheckDeadline().start();
         clearWindow();
         while (true) {
             System.out.println("\nСделайте выбор:\n\n"+"1 - Создать новую заметку.\n"+"2 - Удалить заметку.\n"+
@@ -262,5 +263,19 @@ public class CommandLineUiImpl implements UserInterface {
     private void exit() {
         scanner.close();
         System.exit(0);
+    }
+
+    private class CheckDeadline extends Thread {
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    notesService.checkDeadline();
+                    Thread.sleep(60000);
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
