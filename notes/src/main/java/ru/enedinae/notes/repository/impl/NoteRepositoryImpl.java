@@ -29,6 +29,7 @@ public class NoteRepositoryImpl implements NoteRepository{
     public NoteRepositoryImpl(DataBaseManager dataBaseManager, NoteMapper noteMapper) {
         this.dataBaseManager = dataBaseManager;
         this.noteMapper = noteMapper;
+        this.dataBaseManager.executeInitScript();
     }
 
     public void insertNote(Note note) {

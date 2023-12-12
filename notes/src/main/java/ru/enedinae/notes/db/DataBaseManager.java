@@ -1,41 +1,49 @@
 package ru.enedinae.notes.db;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 @Component
-public class DataBaseManager {
+public class DataBaseManager implements ResourceLoaderAware {
+    private ResourceLoader resourceLoader;
     @Value("${db.url}")
-    private String URL;
+    private String url;
     @Value("${db.user}")
-    private String USER;
+    private String user;
     @Value("${db.password}")
-    private String PASSWORD;
-    private String schemaSql;
+    private String password;
 
     public Connection getConnection() {
-        executeInitScript();
         try {
-            return DriverManager.getConnection(URL,USER,PASSWORD);
+            return DriverManager.getConnection(url,user,password);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void executeInitScript() {
-        try (
-                Connection connection = DriverManager.getConnection(URL,USER,PASSWORD);
-                InputStream schemaInputStream =  DataBaseManager.class.getClassLoader().getResourceAsStream("schema.sql")) {
+    public void executeInitScript() {
+        Resource resource = resourceLoader.getResource("classpath:schema.sql");
+        try (BufferedReader br = new BufferedReader(new FileReader(resource.getFile().getPath()));
+                Connection connection = DriverManager.getConnection(url,user,password);) {
             Statement statement = connection.createStatement();
-            schemaSql = new String(schemaInputStream.readAllBytes(), StandardCharsets.UTF_8);
-            statement.execute(schemaSql);
+            StringBuilder schemaSql = new StringBuilder();
+            while (br.ready()) {
+                schemaSql.append(br.readLine());
+            }
+            statement.execute(schemaSql.toString());
+            schemaSql.delete(0, schemaSql.length());
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
     }
 }
