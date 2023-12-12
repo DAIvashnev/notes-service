@@ -1,24 +1,22 @@
 package ru.enedinae.notes.ui.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.service.NotesService;
 import ru.enedinae.notes.ui.UserInterface;
-
-import javax.swing.plaf.TableHeaderUI;
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
-import java.time.temporal.ValueRange;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
 import static ru.enedinae.notes.enumeration.NoteStatus.*;
 
+@Component("ui")
 public class CommandLineUiImpl implements UserInterface {
     private final NotesService notesService;
     private final Scanner scanner = new Scanner(System.in);
@@ -32,11 +30,13 @@ public class CommandLineUiImpl implements UserInterface {
       }
     };
 
+    @Autowired
     public CommandLineUiImpl(NotesService notesService) {
         this.notesService = notesService;
     }
 
     public void start() {
+        new CheckDeadline().start();
         clearWindow();
         while (true) {
             System.out.println("\nСделайте выбор:\n\n"+"1 - Создать новую заметку.\n"+"2 - Удалить заметку.\n"+
@@ -125,9 +125,9 @@ public class CommandLineUiImpl implements UserInterface {
 
     private void updateNote() {
         clearWindow();
+        allNotes();
         if(!notesService.getAllNotes().isEmpty()) {
             while(true) {
-                allNotes();
                 System.out.println("\nВот список ваших заметок. Введите ID заметки которую хотите изменить?\n0 - Отменить.");
                 try {
                     String name = scanner.nextLine();
@@ -183,19 +183,21 @@ public class CommandLineUiImpl implements UserInterface {
                     System.out.println("Не корректное ID.\n");
                 }
             }
-        } else {
-            clearWindow();
-            System.out.println("У вас нет заметок.");
         }
     }
 
     private void allNotes() {
-        AtomicInteger count = new AtomicInteger(0);
-        System.out.println("Вот список ваших заметок:");
-        notesService.getAllNotes().stream().sorted(NOTE_BY_STATUS_COMPARATOR).forEach(e-> {
-            count.getAndIncrement();
-            System.out.print(count+"."+e.getName()+" - "+e.getStatus()+" (id: "+e.getId()+")\n");
-        });
+        if(!notesService.getAllNotes().isEmpty()) {
+            AtomicInteger count = new AtomicInteger(0);
+            System.out.println("Вот список ваших заметок:");
+            notesService.getAllNotes().stream().sorted(NOTE_BY_STATUS_COMPARATOR).forEach(e -> {
+                count.getAndIncrement();
+                System.out.print(count + "." + e.getName() + " - " + e.getStatus() + " (id: " + e.getId() + ")\n");
+            });
+        } else {
+            clearWindow();
+            System.out.println("У вас нет заметок.");
+        }
     }
 
     private void infoByNote() {
@@ -236,9 +238,6 @@ public class CommandLineUiImpl implements UserInterface {
                         break;
                 }
             }
-        } else {
-            clearWindow();
-            System.out.println("У вас нет заметок.");
         }
     }
 
@@ -264,5 +263,19 @@ public class CommandLineUiImpl implements UserInterface {
     private void exit() {
         scanner.close();
         System.exit(0);
+    }
+
+    private class CheckDeadline extends Thread {
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    notesService.checkDeadline();
+                    Thread.sleep(60000);
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

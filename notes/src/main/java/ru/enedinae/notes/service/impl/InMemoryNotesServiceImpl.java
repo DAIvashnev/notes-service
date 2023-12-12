@@ -40,4 +40,8 @@ public class InMemoryNotesServiceImpl implements NotesService {
     public boolean updateNote(Note updateNote) {
         return true;
     }
+
+    public void checkDeadline() {
+
+    }
 }

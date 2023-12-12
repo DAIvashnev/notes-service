@@ -1,14 +1,16 @@
 package ru.enedinae.notes.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.repository.NoteRepository;
 import ru.enedinae.notes.service.NotesService;
 import java.util.List;
 import java.util.Optional;
-
+@Component
 public class NotesServiceJdbcImpl implements NotesService {
     private final NoteRepository repository;
-
+    @Autowired
     public NotesServiceJdbcImpl(NoteRepository repository) {
         this.repository = repository;
     }
@@ -27,8 +29,7 @@ public class NotesServiceJdbcImpl implements NotesService {
         return Optional.ofNullable(repository.selectById(id));
     }
 
-    public List<Note> getNoteByName(String name) { return repository.selectByName(name);
-    }
+    public List<Note> getNoteByName(String name) { return repository.selectByName(name); }
 
     public boolean deleteNoteById(Integer id) {
         return repository.deleteById(id) != 0;
@@ -37,4 +38,6 @@ public class NotesServiceJdbcImpl implements NotesService {
     public boolean updateNote(Note updateNote) {
         return repository.updateNote(updateNote);
     }
+
+    public void checkDeadline() { repository.checkDeadline(); };
 }
