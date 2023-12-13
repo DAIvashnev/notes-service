@@ -1,8 +1,12 @@
 package ru.enedinae.notes.repository.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.enedinae.notes.db.DataBaseManager;
+
 import ru.enedinae.notes.mapper.NoteMapper;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.repository.NoteRepository;
@@ -33,6 +37,49 @@ public class NoteRepositoryImpl implements NoteRepository{
     }
 
     public void insertNote(Note note) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        dataBaseManager.jdbcTemplate().update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(INSERT);
+            ps.setString(1, note.getName());
+            ps.setString(2, note.getDescription());
+            ps.setString(3, note.getDeadline());
+            ps.setString(4, note.getStatus().toString());
+            return ps;
+        }, keyHolder);
+        //note.setId((int)keyHolder.getKey());
+        //dataBaseManager.jdbcTemplate().update("UPDATE notes SET id = ? WHERE name = ?", keyHolder.getKey(), note.getName());
+    }
+
+    public List<Note> selectAll() {
+        return dataBaseManager.jdbcTemplate().query(SELECT_ALL, new NoteMapper());
+    }
+
+    public Note selectById(Integer id) {
+        return dataBaseManager.jdbcTemplate().query(SELECT_BY_ID, new Object[]{id}, new NoteMapper())
+                .stream().findAny().orElse(null);
+    }
+
+    public List<Note> selectByName(String name) {
+        return dataBaseManager.jdbcTemplate().query(SELECT_BY_NAME, new String[]{name + "%"}, new NoteMapper());
+    }
+
+    public int deleteById(Integer id) {
+        return dataBaseManager.jdbcTemplate().update(DELETE_BY_ID, id);
+    }
+
+    public int updateNote(Note updateNote) {
+        return dataBaseManager.jdbcTemplate().update(UPDATE_NOTES, updateNote.getName(), updateNote.getStatus().toString(), updateNote.getDescription(),
+                updateNote.getDeadline(), updateNote.getId());
+    }
+
+    public void checkDeadline() {
+        dataBaseManager.jdbcTemplate().update(CHECK_DEADLINE);
+    }
+}
+
+
+/*
+public void insertNote(Note note) {
         try(PreparedStatement preparedStatement = dataBaseManager.getConnection()
                 .prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, note.getName());
@@ -112,4 +159,4 @@ public class NoteRepositoryImpl implements NoteRepository{
             e.printStackTrace();
         }
     }
-}
+ */

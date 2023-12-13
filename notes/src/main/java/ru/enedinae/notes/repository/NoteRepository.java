@@ -2,7 +2,6 @@ package ru.enedinae.notes.repository;
 
 import ru.enedinae.notes.model.Note;
 
-import java.sql.ResultSet;
 import java.util.List;
 
 public interface NoteRepository {
@@ -11,6 +10,6 @@ public interface NoteRepository {
     Note selectById(Integer id);
     List<Note> selectByName(String name);
     int deleteById(Integer id);
-    boolean updateNote(Note updateNote);
+    int updateNote(Note updateNote);
     void checkDeadline();
 }

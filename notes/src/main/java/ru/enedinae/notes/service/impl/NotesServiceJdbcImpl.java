@@ -35,9 +35,7 @@ public class NotesServiceJdbcImpl implements NotesService {
         return repository.deleteById(id) != 0;
     }
 
-    public boolean updateNote(Note updateNote) {
-        return repository.updateNote(updateNote);
-    }
+    public boolean updateNote(Note updateNote) { return repository.updateNote(updateNote) > 0; }
 
     public void checkDeadline() { repository.checkDeadline(); };
 }
