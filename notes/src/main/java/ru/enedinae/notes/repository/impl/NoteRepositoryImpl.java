@@ -37,16 +37,24 @@ public class NoteRepositoryImpl implements NoteRepository{
     }
 
     public void insertNote(Note note) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+        //KeyHolder keyHolder = new GeneratedKeyHolder();
         dataBaseManager.jdbcTemplate().update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT);
+            PreparedStatement ps = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, note.getName());
             ps.setString(2, note.getDescription());
             ps.setString(3, note.getDeadline());
             ps.setString(4, note.getStatus().toString());
+            ps.executeUpdate();
+            ps.getGeneratedKeys();
+            ResultSet rs = ps.getGeneratedKeys();
+            while(rs.next()) {
+                note.setId(rs.getInt(1));
+            }
+            ps.setInt(1, note.getId());
             return ps;
-        }, keyHolder);
-        //note.setId((int)keyHolder.getKey());
+        }/*, keyHolder*/);
+        //System.out.println(keyHolder.getKey());
+        //note.setId(Integer.parseInt(String.valueOf(keyHolder.getKey())));
         //dataBaseManager.jdbcTemplate().update("UPDATE notes SET id = ? WHERE name = ?", keyHolder.getKey(), note.getName());
     }
 
