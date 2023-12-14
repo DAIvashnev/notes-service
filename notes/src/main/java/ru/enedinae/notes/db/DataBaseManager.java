@@ -1,20 +1,17 @@
 package ru.enedinae.notes.db;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 @Component
-public class DataBaseManager implements ResourceLoaderAware {
-    private ResourceLoader resourceLoader;
-    //private JdbcTemplate jdbcTemplate;
+public class DataBaseManager {
     @Value("${db.url}")
     private String url;
     @Value("${db.user}")
@@ -31,56 +28,14 @@ public class DataBaseManager implements ResourceLoaderAware {
     }
 
     public void executeInitScript() {
-        Resource resource = resourceLoader.getResource("classpath:schema.sql");
-        try (BufferedReader br = new BufferedReader(new FileReader(resource.getFile().getPath()));
-                Connection connection = DriverManager.getConnection(url,user,password);) {
+        try (
+                Connection connection = DriverManager.getConnection(url,user,password);
+                InputStream schemaInputStream =  DataBaseManager.class.getClassLoader().getResourceAsStream("schema.sql")) {
             Statement statement = connection.createStatement();
-            StringBuilder schemaSql = new StringBuilder();
-            while (br.ready()) {
-                schemaSql.append(br.readLine());
-            }
-            statement.execute(schemaSql.toString());
-            schemaSql.delete(0, schemaSql.length());
+            String schemaSql = new String(schemaInputStream.readAllBytes(), StandardCharsets.UTF_8);
+            statement.execute(schemaSql);
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void setResourceLoader(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
     }
 }
-
-
-
-/*
-public Connection getConnection() {
-        try {
-            return DriverManager.getConnection(url,user,password);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void executeInitScript() {
-        Resource resource = resourceLoader.getResource("classpath:schema.sql");
-        try (BufferedReader br = new BufferedReader(new FileReader(resource.getFile().getPath()));
-                Connection connection = DriverManager.getConnection(url,user,password);) {
-            Statement statement = connection.createStatement();
-            StringBuilder schemaSql = new StringBuilder();
-            while (br.ready()) {
-                schemaSql.append(br.readLine());
-            }
-            statement.execute(schemaSql.toString());
-            schemaSql.delete(0, schemaSql.length());
-        } catch (IOException | SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void setResourceLoader(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
-    }
- */
