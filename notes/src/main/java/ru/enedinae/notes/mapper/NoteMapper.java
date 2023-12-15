@@ -4,13 +4,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.enedinae.notes.enumeration.NoteStatus;
 import ru.enedinae.notes.model.Note;
-
-import javax.swing.tree.TreePath;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Component
 public class NoteMapper implements RowMapper<Note> {
