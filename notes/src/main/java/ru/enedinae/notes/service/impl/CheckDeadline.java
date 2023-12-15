@@ -16,7 +16,7 @@ public class CheckDeadline extends Thread {
         try {
             while (true) {
                 repository.checkDeadline();
-                Thread.sleep(60000);
+                Thread.sleep(10000);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
