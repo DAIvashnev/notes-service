@@ -1,17 +1,24 @@
 package ru.enedinae.notes.db;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 @Component
 public class DataBaseManager {
+    private final JdbcTemplate jdbcTemplate;
     @Value("${db.url}")
     private String url;
     @Value("${db.user}")
@@ -19,12 +26,13 @@ public class DataBaseManager {
     @Value("${db.password}")
     private String password;
 
+    @Autowired
+    public DataBaseManager(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     public JdbcTemplate jdbcTemplate() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(url);
-        dataSource.setUsername(user);
-        dataSource.setPassword(password);
-        return new JdbcTemplate(dataSource);
+        return jdbcTemplate;
     }
 
     public void executeInitScript() {

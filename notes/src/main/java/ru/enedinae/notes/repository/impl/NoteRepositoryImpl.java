@@ -1,6 +1,9 @@
 package ru.enedinae.notes.repository.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
@@ -15,7 +18,7 @@ import java.util.List;
 @Component
 public class NoteRepositoryImpl implements NoteRepository {
     private final DataBaseManager dataBaseManager;
-    private final NoteMapper noteMapper;
+    private final BeanPropertyRowMapper<Note> noteMapper;
     private static final String INSERT = "INSERT INTO notes (name, description, deadline, status, create_time, update_time) " +
             "VALUES(?, ?, ?, ?, now(), now())";
     private static final String SELECT_ALL = "SELECT * FROM notes WHERE status NOT LIKE 'DELETED'";
@@ -27,7 +30,7 @@ public class NoteRepositoryImpl implements NoteRepository {
             "UPDATE notes SET status = 'EXPIRED', update_time = now() WHERE status != 'EXPIRED' and deadline != '' and TIMESTAMPTZ(deadline) < CURRENT_TIMESTAMP;";
 
     @Autowired
-    public NoteRepositoryImpl(DataBaseManager dataBaseManager, NoteMapper noteMapper) {
+    public NoteRepositoryImpl(DataBaseManager dataBaseManager, BeanPropertyRowMapper<Note> noteMapper) {
         this.dataBaseManager = dataBaseManager;
         this.noteMapper = noteMapper;
     }
@@ -46,16 +49,16 @@ public class NoteRepositoryImpl implements NoteRepository {
     }
 
     public List<Note> selectAll() {
-        return dataBaseManager.jdbcTemplate().query(SELECT_ALL, new NoteMapper());
+        return dataBaseManager.jdbcTemplate().query(SELECT_ALL, noteMapper);
     }
 
     public Note selectById(Integer id) {
-        return dataBaseManager.jdbcTemplate().query(SELECT_BY_ID, new Object[]{id}, new NoteMapper())
+        return dataBaseManager.jdbcTemplate().query(SELECT_BY_ID, noteMapper, id)
                 .stream().findAny().orElse(null);
     }
 
     public List<Note> selectByName(String name) {
-        return dataBaseManager.jdbcTemplate().query(SELECT_BY_NAME, new String[]{name + "%"}, new NoteMapper());
+        return dataBaseManager.jdbcTemplate().query(SELECT_BY_NAME, noteMapper,name+"%");
     }
 
     public int deleteById(Integer id) {

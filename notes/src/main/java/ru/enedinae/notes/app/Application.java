@@ -3,6 +3,7 @@ package ru.enedinae.notes.app;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.enedinae.notes.db.DataBaseManager;
 import ru.enedinae.notes.service.impl.CheckDeadline;
+import ru.enedinae.notes.springConfig.SpringConfig;
 import ru.enedinae.notes.ui.impl.CommandLineUiImpl;
 
 public class Application {
