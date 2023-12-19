@@ -14,11 +14,11 @@ import java.sql.*;
 @Component
 public class DataBaseManager implements CommandLineRunner {
     private final JdbcTemplate jdbcTemplate;
-    @Value("${db.url}")
+    @Value("${spring.datasource.url}")
     private String url;
-    @Value("${db.user}")
+    @Value("${spring.datasource.user}")
     private String user;
-    @Value("${db.password}")
+    @Value("${spring.datasource.password}")
     private String password;
 
     @Autowired

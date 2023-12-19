@@ -7,6 +7,7 @@ import ru.enedinae.notes.repository.NoteRepository;
 import ru.enedinae.notes.service.NotesService;
 import java.util.List;
 import java.util.Optional;
+
 @Component
 public class NotesServiceJdbcImpl implements NotesService {
     private final NoteRepository repository;

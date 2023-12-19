@@ -1,5 +1,6 @@
 package ru.enedinae.notes.repository;
 
+import org.springframework.data.repository.CrudRepository;
 import ru.enedinae.notes.model.Note;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface NoteRepository {
     int deleteById(Integer id);
     int updateNote(Note updateNote);
     void checkDeadline();
+
+
 }
