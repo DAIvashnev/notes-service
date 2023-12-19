@@ -2,14 +2,17 @@ package ru.enedinae.notes.db;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.enedinae.notes.ui.impl.CommandLineUiImpl;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 @Component
-public class DataBaseManager {
+public class DataBaseManager implements CommandLineRunner {
     private final JdbcTemplate jdbcTemplate;
     @Value("${db.url}")
     private String url;
@@ -37,5 +40,10 @@ public class DataBaseManager {
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        executeInitScript();
     }
 }

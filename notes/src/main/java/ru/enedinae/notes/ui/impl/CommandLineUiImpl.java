@@ -1,6 +1,7 @@
 package ru.enedinae.notes.ui.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.service.NotesService;
@@ -16,8 +17,8 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import static ru.enedinae.notes.enumeration.NoteStatus.*;
 
-@Component("ui")
-public class CommandLineUiImpl implements UserInterface {
+@Component
+public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
     private final NotesService notesService;
     private final Scanner scanner = new Scanner(System.in);
     private static final Comparator<Note> NOTE_BY_STATUS_COMPARATOR = (n1, n2) -> {
@@ -35,11 +36,15 @@ public class CommandLineUiImpl implements UserInterface {
         this.notesService = notesService;
     }
 
+    public void run(String... args) {
+        start();
+    }
+
     public void start() {
         clearWindow();
         while (true) {
-            System.out.println("\nСделайте выбор:\n\n"+"1 - Создать новую заметку.\n"+"2 - Удалить заметку.\n"+
-                    "3 - Обновить заметку.\n"+"4 - Ваши заметки.\n"+"5 - Информация о заметке.\n"+"\n0 - Exit");
+            System.out.println("\nСделайте выбор:\n\n" + "1 - Создать новую заметку.\n" + "2 - Удалить заметку.\n" +
+                    "3 - Обновить заметку.\n" + "4 - Ваши заметки.\n" + "5 - Информация о заметке.\n" + "\n0 - Exit");
             switch (scanner.nextLine()) {
                 case "1":
                     addNote();
@@ -61,7 +66,8 @@ public class CommandLineUiImpl implements UserInterface {
                     break;
                 default:
                     clearWindow();
-                    System.out.print("Нет такой команды. Введите номер команды показанный на экране."); break;
+                    System.out.print("Нет такой команды. Введите номер команды показанный на экране.");
+                    break;
             }
         }
     }

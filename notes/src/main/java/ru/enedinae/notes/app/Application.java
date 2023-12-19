@@ -1,16 +1,15 @@
 package ru.enedinae.notes.app;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import ru.enedinae.notes.db.DataBaseManager;
-import ru.enedinae.notes.service.impl.CheckDeadline;
-import ru.enedinae.notes.ui.impl.CommandLineUiImpl;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import org.springframework.context.annotation.ComponentScan;
+
+@SpringBootApplication
+@ComponentScan("ru.enedinae.notes")
 public class Application {
     public static void main(String[] args)  {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        context.getBean("dataBaseManager", DataBaseManager.class).executeInitScript();
-        context.getBean("checkDeadline", CheckDeadline.class).start();
-        context.getBean("ui", CommandLineUiImpl.class).start();
-        context.close();
+        SpringApplication.run(Application.class);
+
     }
 }
