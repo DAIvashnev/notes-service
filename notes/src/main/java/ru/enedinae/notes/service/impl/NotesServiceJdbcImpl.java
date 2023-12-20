@@ -1,11 +1,7 @@
 package ru.enedinae.notes.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import ru.enedinae.notes.repository.CreateTable;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.repository.NoteRepository;
 import ru.enedinae.notes.service.NotesService;
@@ -14,18 +10,18 @@ import java.util.Optional;
 
 @Component
 public class NotesServiceJdbcImpl implements NotesService {
-    private  NoteRepository repository;
+
+    private final NoteRepository repository;
+    @Autowired
+    public NotesServiceJdbcImpl(NoteRepository repository) {
+        this.repository = repository;
+    }
 
 
-    /*public Note createNote(String name, String desc, String deadLine) {
-        Note note = new Note(name, desc, deadLine);
-        repository.insertNote(note);
-        return note;
-    }*/
-
-    @Override
     public Note createNote(String name, String desc, String deadLine) {
-        return null;
+        Note note = new Note(name, desc, deadLine);
+        repository.save(note);
+        return note;
     }
 
     public List<Note> getAllNotes() {
@@ -33,34 +29,22 @@ public class NotesServiceJdbcImpl implements NotesService {
     }
 
     @Override
-    public Optional<Note> getNoteById(Integer id) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<Note> getNoteByName(String name) {
-        return null;
-    }
-
-    @Override
-    public boolean deleteNoteById(Integer id) {
-        return false;
-    }
-
-    @Override
     public boolean updateNote(Note updateNote) {
         return false;
     }
 
-    /*public Optional<Note> getNoteById(Integer id) {
-        return Optional.ofNullable(repository.selectById(id));
+    public Optional<Note> getNoteById(Long id) {
+        return repository.findById(id);
     }
 
-    public List<Note> getNoteByName(String name) { return repository.selectByName(name); }
-
-    public boolean deleteNoteById(Integer id) {
-        return repository.deleteById(id) != 0;
+    public List<Note> getNoteByName(String name) {
+        return repository.findAllByName(name);
     }
 
-    public boolean updateNote(Note updateNote) { return repository.updateNote(updateNote) > 0; }*/
+    public boolean deleteNoteById(Long id) {
+        return true;
+        //return repository.deleteById(id);
+    }
+
+    /*public boolean updateNote(Note updateNote) { return repository.updateNote(updateNote) > 0; }*/
 }

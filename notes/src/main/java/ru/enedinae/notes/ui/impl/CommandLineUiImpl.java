@@ -99,7 +99,7 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                     case "1":
                         System.out.print("Введите id: ");
                         try {
-                            Integer nameId = Integer.parseInt(scanner.nextLine());
+                            Long nameId = Long.parseLong(scanner.nextLine());
                             if (notesService.deleteNoteById(nameId)) {
                                 Note note = notesService.getNoteById(nameId).get();
                                 note.setStatus(DELETED);
@@ -140,7 +140,7 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                         clearWindow();
                         return;
                     }
-                    Optional<Note> newNote = notesService.getNoteById(Integer.parseInt(name));
+                    Optional<Note> newNote = notesService.getNoteById(Long.parseLong(name));
                     if (newNote.isPresent()) {
                         Note note = newNote.get();
                         clearWindow();
@@ -215,7 +215,7 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                     case "1":
                         System.out.print("Введите id: ");
                         try {
-                            Integer nameId = Integer.parseInt(scanner.nextLine());
+                            Long nameId = Long.parseLong(scanner.nextLine());
                             notesService.getNoteById(nameId).ifPresentOrElse(
                                     System.out::println,
                                     ()-> System.out.println("Заметки c таким ID не существует.")

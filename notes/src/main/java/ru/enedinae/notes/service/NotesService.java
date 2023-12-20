@@ -8,8 +8,8 @@ import java.util.Optional;
 public interface NotesService {
     Note createNote(String name, String desc, String deadLine);
     List<Note> getAllNotes();
-    Optional<Note> getNoteById(Integer id);
+    Optional<Note> getNoteById(Long id);
     List<Note> getNoteByName(String name);
-    boolean deleteNoteById(Integer id);
+    boolean deleteNoteById(Long id);
     boolean updateNote(Note updateNote);
 }
