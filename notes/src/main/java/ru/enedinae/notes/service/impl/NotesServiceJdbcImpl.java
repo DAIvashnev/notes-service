@@ -1,7 +1,10 @@
 package ru.enedinae.notes.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.enedinae.notes.repository.CreateTable;
 import ru.enedinae.notes.model.Note;
 import ru.enedinae.notes.repository.NoteRepository;
@@ -12,11 +15,7 @@ import java.util.Optional;
 @Component
 public class NotesServiceJdbcImpl implements NotesService {
     private  NoteRepository repository;
-    private final CreateTable createTable;
-    @Autowired
-    public NotesServiceJdbcImpl(CreateTable createTable) {
-        this.createTable = createTable;
-    }
+
 
     /*public Note createNote(String name, String desc, String deadLine) {
         Note note = new Note(name, desc, deadLine);

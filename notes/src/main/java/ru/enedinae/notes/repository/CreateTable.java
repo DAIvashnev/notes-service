@@ -8,7 +8,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
-@Component
+//@Component
 public class CreateTable implements CommandLineRunner {
     @Value("${spring.datasource.url}")
     private String url;

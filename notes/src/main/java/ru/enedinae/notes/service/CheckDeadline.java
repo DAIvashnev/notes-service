@@ -10,6 +10,9 @@ import ru.enedinae.notes.repository.NoteRepository;
 public class CheckDeadline extends Thread implements CommandLineRunner {
     private NoteRepository repository;
     @Autowired
+    public CheckDeadline(NoteRepository repository) {
+        this.repository = repository;
+    }
     @Override
     public void run() {
         try {
