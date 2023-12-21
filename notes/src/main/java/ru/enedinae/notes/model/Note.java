@@ -75,9 +75,7 @@ public class Note {
         this.description = description;
     }
 
-    public void setDeadline(String deadline) {
-        this.deadline = deadline;
-    }
+    public void setDeadline(String deadline) { this.deadline = deadline; }
 
     public void setStatus(String status) {
         this.status = status;
