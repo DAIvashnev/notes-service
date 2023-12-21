@@ -15,8 +15,13 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
     @Query(nativeQuery=true, value = "SELECT * FROM notes WHERE status NOT LIKE 'DELETED'")
     List<Note> findAll();
 
-
     @Modifying
-    @Query(nativeQuery=true, value = "UPDATE notes SET status = 'DELETED', update_time = now() WHERE notes.id=:id")
+    @Query(nativeQuery=true, value = "UPDATE notes n SET status = 'DELETED', update_time = now() WHERE n.id=:id")
     void deleteById(Long id);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery=true, value = "UPDATE notes SET status = 'EXPIRED', update_time = now() WHERE status != 'EXPIRED' " +
+            "and deadline != '' and TIMESTAMPTZ(deadline) < CURRENT_TIMESTAMP;")
+    void checkDeadline();
 }

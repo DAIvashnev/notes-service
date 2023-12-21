@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.enedinae.notes.repository.NoteRepository;
 
-//@Component
+@Component
 public class CheckDeadline extends Thread implements CommandLineRunner {
     private NoteRepository repository;
     @Autowired
@@ -17,7 +17,7 @@ public class CheckDeadline extends Thread implements CommandLineRunner {
     public void run() {
         try {
             while (true) {
-                //repository.checkDeadline();
+                repository.checkDeadline();
                 Thread.sleep(10000);
             }
         } catch (InterruptedException e) {

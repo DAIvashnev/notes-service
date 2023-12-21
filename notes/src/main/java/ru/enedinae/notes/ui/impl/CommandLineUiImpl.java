@@ -40,7 +40,6 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
     }
 
     public void start() {
-
         while (true) {
             System.out.println("\nСделайте выбор:\n\n" + "1 - Создать новую заметку.\n" + "2 - Удалить заметку.\n" +
                     "3 - Обновить заметку.\n" + "4 - Ваши заметки.\n" + "5 - Информация о заметке.\n" + "\n0 - Exit");
@@ -64,7 +63,6 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                     exit();
                     break;
                 default:
-
                     System.out.print("Нет такой команды. Введите номер команды показанный на экране.");
                     break;
             }
@@ -72,24 +70,20 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
     }
 
     private void addNote() {
-
         System.out.print("Имя вашей заметки: ");
         String name = scanner.nextLine();
         System.out.print("Содержание: ");
         String description = scanner.nextLine();
         String deadline = validationDateTime();
         if (deadline != null) {
-
             System.out.printf("Заметка успешно создана! id заметки - %s\n",
                     notesService.createNote(name, description, deadline).getId());
         } else {
-
             System.out.println("Не корректный формат даты.");
         }
     }
 
     private void menuDell() {
-
         if (!notesService.getAllNotes().isEmpty()) {
             while (true) {
                 allNotes();
@@ -103,7 +97,6 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                             Note note = notesService.getNoteById(nameId).get();
                             note.setStatus(DELETED.name());
                             notesService.updateNote(note);
-
                             System.out.println("Заметка успешно удалена.");
                             return;
                         } catch (Exception e) {
@@ -111,10 +104,8 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                         }
                         break;
                     case "2":
-
                         return;
                     default:
-
                         System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
                         break;
                 }
@@ -125,7 +116,6 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
     }
 
     private void updateNote() {
-
         allNotes();
         if (!notesService.getAllNotes().isEmpty()) {
             while (true) {
@@ -133,13 +123,11 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                 try {
                     String name = scanner.nextLine();
                     if (name.equals("0")) {
-
                         return;
                     }
                     Optional<Note> newNote = notesService.getNoteById(Long.parseLong(name));
                     if (newNote.isPresent()) {
                         Note note = newNote.get();
-
                         System.out.println("Выберите, что хотите изменить:\n1 - Имя\n2 - Заметка выполнена\n3 - Содержание\n4 - Срок выполнния\n5 - Отменить");
                         switch (scanner.nextLine()) {
                             case "1":
@@ -158,29 +146,24 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                                 if (deadline != null) {
                                     note.setDeadline(deadline);
                                 } else {
-
                                     System.out.println("Не корректный формат даты.");
                                     return;
                                 }
                                 break;
                             case "5":
-
                                 return;
                             default:
-
                                 System.out.println("Нет такой команды.");
                                 return;
                         }
-
-                        System.out.println("Заметка успешно обновлена!");
+                        note.setUpdate_time(LocalDateTime.now().toString().replace("T", " ").substring(0, 16));
                         notesService.updateNote(note);
+                        System.out.println("Заметка успешно обновлена!");
                         return;
                     } else {
-
                         System.out.println("Заметки с таким ID нет.\n");
                     }
                 } catch (Exception e) {
-
                     System.out.println("Не корректное ID.\n");
                 }
             }
@@ -196,13 +179,11 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                 System.out.print(count + "." + e.getName() + " - " + e.getStatus() + " (id: " + e.getId() + ")\n");
             });
         } else {
-
             System.out.println("У вас нет заметок.");
         }
     }
 
     private void infoByNote() {
-
         allNotes();
         if (!notesService.getAllNotes().isEmpty()) {
             while (true) {
@@ -231,10 +212,8 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                         }
                         break;
                     case "3":
-
                         return;
                     default:
-
                         System.out.println("Нет такой команды. Введите номер команды показанный на экране.");
                         break;
                 }

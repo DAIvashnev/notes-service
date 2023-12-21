@@ -11,5 +11,5 @@ public interface NotesService {
     Optional<Note> getNoteById(Long id);
     List<Note> getNoteByName(String name);
     void deleteNoteById(Long id);
-    boolean updateNote(Note updateNote);
+    void updateNote(Note updateNote);
 }
