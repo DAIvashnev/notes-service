@@ -10,6 +10,6 @@ public interface NotesService {
     List<Note> getAllNotes();
     Optional<Note> getNoteById(Long id);
     List<Note> getNoteByName(String name);
-    boolean deleteNoteById(Long id);
+    void deleteNoteById(Long id);
     boolean updateNote(Note updateNote);
 }

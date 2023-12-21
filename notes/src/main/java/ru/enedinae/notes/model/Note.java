@@ -12,7 +12,7 @@ import java.util.Objects;
 @Table(name = "notes")
 public class Note {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @Column(name = "name")
@@ -22,7 +22,7 @@ public class Note {
     @Column(name = "deadline")
     private String deadline;
     @Column(name = "status")
-    private NoteStatus status;
+    private String status;
     @Column(name = "create_time")
     private String create_time;
     @Column(name = "update_time")
@@ -34,7 +34,7 @@ public class Note {
         this.name = name.length()>50 ? name.substring(0, 50) : name;
         this.description = description.length()>500 ? description.substring(0, 500) : description;
         this.deadline = deadline.length()>50 ? deadline.substring(0, 50) : deadline;
-        this.status = NoteStatus.NEW;
+        this.status = NoteStatus.NEW.name();
         this.create_time = LocalDateTime.now().toString().replace("T", " ").substring(0, 16);
         this.update_time = LocalDateTime.now().toString().replace("T", " ").substring(0, 16);
     }
@@ -55,7 +55,7 @@ public class Note {
         return deadline;
     }
 
-    public NoteStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -79,7 +79,7 @@ public class Note {
         this.deadline = deadline;
     }
 
-    public void setStatus(NoteStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -109,7 +109,7 @@ public class Note {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Note note = (Note) o;
-        return Objects.equals(id, note.id) && Objects.equals(name, note.name) && Objects.equals(description, note.description) && Objects.equals(deadline, note.deadline) && status == note.status && Objects.equals(create_time, note.create_time) && Objects.equals(update_time, note.update_time);
+        return Objects.equals(id, note.id) && Objects.equals(name, note.name) && Objects.equals(description, note.description) && Objects.equals(deadline, note.deadline) && Objects.equals(status, note.status) && Objects.equals(create_time, note.create_time) && Objects.equals(update_time, note.update_time);
     }
 
     @Override

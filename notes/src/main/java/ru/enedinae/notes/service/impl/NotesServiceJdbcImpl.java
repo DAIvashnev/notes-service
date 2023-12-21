@@ -38,12 +38,11 @@ public class NotesServiceJdbcImpl implements NotesService {
     }
 
     public List<Note> getNoteByName(String name) {
-        return repository.findAllByName(name);
+        return repository.findByNameStartingWith(name);
     }
 
-    public boolean deleteNoteById(Long id) {
-        return true;
-        //return repository.deleteById(id);
+    public void deleteNoteById(Long id) {
+        repository.deleteById(id);
     }
 
     /*public boolean updateNote(Note updateNote) { return repository.updateNote(updateNote) > 0; }*/
