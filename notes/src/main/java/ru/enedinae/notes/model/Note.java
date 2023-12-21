@@ -2,6 +2,7 @@ package ru.enedinae.notes.model;
 
 import jakarta.persistence.*;
 import org.hibernate.boot.model.relational.ColumnOrderingStrategy;
+import org.springframework.core.annotation.Order;
 import ru.enedinae.notes.enumeration.NoteStatus;
 
 import java.time.LocalDateTime;
@@ -24,9 +25,9 @@ public class Note {
     @Column(name = "status")
     private String status;
     @Column(name = "create_time")
-    private String create_time;
+    private LocalDateTime create_time;
     @Column(name = "update_time")
-    private String update_time;
+    private LocalDateTime update_time;
 
     public Note() {}
 
@@ -35,8 +36,8 @@ public class Note {
         this.description = description.length()>500 ? description.substring(0, 500) : description;
         this.deadline = deadline.length()>50 ? deadline.substring(0, 50) : deadline;
         this.status = NoteStatus.NEW.name();
-        this.create_time = LocalDateTime.now().toString().replace("T", " ").substring(0, 16);
-        this.update_time = LocalDateTime.now().toString().replace("T", " ").substring(0, 16);
+        this.create_time = LocalDateTime.now();
+        this.update_time = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -59,9 +60,9 @@ public class Note {
         return status;
     }
 
-    public String getCreate_time() { return create_time; }
+    public LocalDateTime getCreate_time() { return create_time; }
 
-    public String getUpdate_time() { return update_time; }
+    public LocalDateTime getUpdate_time() { return update_time; }
 
     public void setId(Long id) {
         this.id = id;
@@ -81,9 +82,9 @@ public class Note {
         this.status = status;
     }
 
-    public void setCreate_time(String create_time) { this.create_time = create_time; }
+    public void setCreate_time(LocalDateTime create_time) { this.create_time = create_time; }
 
-    public void setUpdate_time(String update_time) { this.update_time = update_time; }
+    public void setUpdate_time(LocalDateTime update_time) { this.update_time = update_time; }
 
     @Override
     public String toString() {

@@ -18,7 +18,7 @@ public class CheckDeadline extends Thread implements CommandLineRunner {
         try {
             while (true) {
                 repository.checkDeadline();
-                Thread.sleep(10000);
+                Thread.sleep(60000);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

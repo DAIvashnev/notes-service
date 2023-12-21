@@ -156,7 +156,7 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
                                 System.out.println("Нет такой команды.");
                                 return;
                         }
-                        note.setUpdate_time(LocalDateTime.now().toString().replace("T", " ").substring(0, 16));
+                        note.setUpdate_time(LocalDateTime.now());
                         notesService.updateNote(note);
                         System.out.println("Заметка успешно обновлена!");
                         return;
@@ -234,10 +234,6 @@ public class CommandLineUiImpl implements UserInterface, CommandLineRunner {
         } catch (DateTimeException e) {
             return null;
         }
-    }
-
-    private void clearWindow() {
-        System.out.print("\033[H\033[J");
     }
 
     private void exit() {
