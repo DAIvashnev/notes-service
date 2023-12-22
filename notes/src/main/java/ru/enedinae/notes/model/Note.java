@@ -1,14 +1,33 @@
 package ru.enedinae.notes.model;
 
+import jakarta.persistence.*;
+import org.hibernate.boot.model.relational.ColumnOrderingStrategy;
+import org.springframework.core.annotation.Order;
 import ru.enedinae.notes.enumeration.NoteStatus;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
+@Entity
+@Table(name = "notes")
 public class Note {
-    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "description")
     private String description;
+    @Column(name = "deadline")
     private String deadline;
-    private NoteStatus status;
+    @Column(name = "status")
+    private String status;
+    @Column(name = "create_time")
+    private LocalDateTime create_time;
+    @Column(name = "update_time")
+    private LocalDateTime update_time;
 
     public Note() {}
 
@@ -16,10 +35,12 @@ public class Note {
         this.name = name.length()>50 ? name.substring(0, 50) : name;
         this.description = description.length()>500 ? description.substring(0, 500) : description;
         this.deadline = deadline.length()>50 ? deadline.substring(0, 50) : deadline;
-        this.status = NoteStatus.NEW;
+        this.status = NoteStatus.NEW.name();
+        this.create_time = LocalDateTime.now();
+        this.update_time = LocalDateTime.now();
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -35,11 +56,15 @@ public class Note {
         return deadline;
     }
 
-    public NoteStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setId(Integer id) {
+    public LocalDateTime getCreate_time() { return create_time; }
+
+    public LocalDateTime getUpdate_time() { return update_time; }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -51,13 +76,15 @@ public class Note {
         this.description = description;
     }
 
-    public void setDeadline(String deadline) {
-        this.deadline = deadline;
-    }
+    public void setDeadline(String deadline) { this.deadline = deadline; }
 
-    public void setStatus(NoteStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
+
+    public void setCreate_time(LocalDateTime create_time) { this.create_time = create_time; }
+
+    public void setUpdate_time(LocalDateTime update_time) { this.update_time = update_time; }
 
     @Override
     public String toString() {
@@ -81,11 +108,11 @@ public class Note {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Note note = (Note) o;
-        return Objects.equals(id, note.id) && Objects.equals(name, note.name) && Objects.equals(description, note.description) && Objects.equals(deadline, note.deadline) && status == note.status;
+        return Objects.equals(id, note.id) && Objects.equals(name, note.name) && Objects.equals(description, note.description) && Objects.equals(deadline, note.deadline) && Objects.equals(status, note.status) && Objects.equals(create_time, note.create_time) && Objects.equals(update_time, note.update_time);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, deadline, status);
+        return Objects.hash(id, name, description, deadline, status, create_time, update_time);
     }
 }
