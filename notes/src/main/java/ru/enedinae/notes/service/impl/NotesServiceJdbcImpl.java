@@ -7,6 +7,7 @@ import ru.enedinae.notes.repository.NoteRepository;
 import ru.enedinae.notes.service.NotesService;
 import java.util.List;
 import java.util.Optional;
+
 @Component
 public class NotesServiceJdbcImpl implements NotesService {
     private final NoteRepository repository;
@@ -17,23 +18,31 @@ public class NotesServiceJdbcImpl implements NotesService {
 
     public Note createNote(String name, String desc, String deadLine) {
         Note note = new Note(name, desc, deadLine);
-        repository.insertNote(note);
+        repository.save(note);
         return note;
     }
 
     public List<Note> getAllNotes() {
-        return repository.selectAll();
+        return repository.findAll();
     }
 
-    public Optional<Note> getNoteById(Integer id) {
-        return Optional.ofNullable(repository.selectById(id));
+    public Optional<Note> getNoteById(Long id) {
+        return repository.findById(id);
     }
 
-    public List<Note> getNoteByName(String name) { return repository.selectByName(name); }
-
-    public boolean deleteNoteById(Integer id) {
-        return repository.deleteById(id) != 0;
+    public List<Note> getNoteByName(String name) {
+        return repository.findByNameStartingWith(name);
     }
 
-    public boolean updateNote(Note updateNote) { return repository.updateNote(updateNote) > 0; }
+    public void deleteNoteById(Long id) {
+        repository.deleteById(id);
+    }
+
+    public void updateNote(Note updateNote) {
+        repository.save(updateNote);
+    }
+
+    public void checkDeadline() {
+        repository.checkDeadline();
+    }
 }
