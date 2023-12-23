@@ -24,10 +24,10 @@ public class Note {
     private String deadline;
     @Column(name = "status")
     private String status;
-    @Column(name = "create_time")
-    private LocalDateTime create_time;
-    @Column(name = "update_time")
-    private LocalDateTime update_time;
+    @Column(name = "time_create")
+    private LocalDateTime time_create;
+    @Column(name = "time_update")
+    private LocalDateTime time_update;
 
     public Note() {}
 
@@ -36,8 +36,8 @@ public class Note {
         this.description = description.length()>500 ? description.substring(0, 500) : description;
         this.deadline = deadline.length()>50 ? deadline.substring(0, 50) : deadline;
         this.status = NoteStatus.NEW.name();
-        this.create_time = LocalDateTime.now();
-        this.update_time = LocalDateTime.now();
+        this.time_create = LocalDateTime.now();
+        this.time_update = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -60,9 +60,9 @@ public class Note {
         return status;
     }
 
-    public LocalDateTime getCreate_time() { return create_time; }
+    public LocalDateTime getCreate_time() { return time_create; }
 
-    public LocalDateTime getUpdate_time() { return update_time; }
+    public LocalDateTime getUpdate_time() { return time_update; }
 
     public void setId(Long id) {
         this.id = id;
@@ -82,9 +82,9 @@ public class Note {
         this.status = status;
     }
 
-    public void setCreate_time(LocalDateTime create_time) { this.create_time = create_time; }
+    public void setCreate_time(LocalDateTime create_time) { this.time_create = create_time; }
 
-    public void setUpdate_time(LocalDateTime update_time) { this.update_time = update_time; }
+    public void setUpdate_time(LocalDateTime update_time) { this.time_update = update_time; }
 
     @Override
     public String toString() {
@@ -108,11 +108,11 @@ public class Note {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Note note = (Note) o;
-        return Objects.equals(id, note.id) && Objects.equals(name, note.name) && Objects.equals(description, note.description) && Objects.equals(deadline, note.deadline) && Objects.equals(status, note.status) && Objects.equals(create_time, note.create_time) && Objects.equals(update_time, note.update_time);
+        return Objects.equals(id, note.id) && Objects.equals(name, note.name) && Objects.equals(description, note.description) && Objects.equals(deadline, note.deadline) && Objects.equals(status, note.status) && Objects.equals(time_create, note.time_create) && Objects.equals(time_update, note.time_update);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, deadline, status, create_time, update_time);
+        return Objects.hash(id, name, description, deadline, status, time_create, time_update);
     }
 }
