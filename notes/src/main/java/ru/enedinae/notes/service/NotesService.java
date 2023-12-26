@@ -1,15 +1,17 @@
 package ru.enedinae.notes.service;
 
-import ru.enedinae.notes.model.Note;
+import ru.enedinae.notes.exceptions.NotCorrectFormatDataException;
+import ru.enedinae.notes.exceptions.NotHaveNotesException;
+import ru.enedinae.notes.exceptions.NoteNotFoundException;
+import ru.enedinae.notes.entity.Note;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface NotesService {
-    Note createNote(String name, String desc, String deadLine);
-    List<Note> getAllNotes();
-    Optional<Note> getNoteById(Long id);
-    List<Note> getNoteByName(String name);
-    void deleteNoteById(Long id);
-    void updateNote(Note updateNote);
+    Note createNote(String name, String desc, String deadLine) throws NotCorrectFormatDataException;
+    List<Note> getAllNotes() throws NotHaveNotesException;
+    Note getNoteById(Long id) throws NoteNotFoundException;
+    List<Note> getNoteByName(String name) throws NoteNotFoundException;
+    void deleteNoteById(Long id) throws NoteNotFoundException;
+    void updateNote(Long id, Note note) throws NoteNotFoundException, NotCorrectFormatDataException;
 }
