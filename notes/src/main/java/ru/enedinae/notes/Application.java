@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @EnableJpaRepositories("ru.enedinae.notes.repository")
-@EntityScan("ru.enedinae.notes.model")
+@EntityScan("ru.enedinae.notes.entity")
 @SpringBootApplication
 @EnableScheduling
 public class Application {

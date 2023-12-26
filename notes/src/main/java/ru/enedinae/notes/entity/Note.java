@@ -1,12 +1,9 @@
-package ru.enedinae.notes.model;
+package ru.enedinae.notes.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.boot.model.relational.ColumnOrderingStrategy;
-import org.springframework.core.annotation.Order;
 import ru.enedinae.notes.enumeration.NoteStatus;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
