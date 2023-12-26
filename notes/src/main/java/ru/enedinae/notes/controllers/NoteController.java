@@ -28,7 +28,7 @@ public class NoteController {
         }
     }
 
-    @PostMapping
+    @PostMapping("createNote")
     public ResponseEntity createNote(@RequestBody Note note) {
         try {
             notesService.createNote(note.getName(),note.getDescription(),note.getDeadline());
