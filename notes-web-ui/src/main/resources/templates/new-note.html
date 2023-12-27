@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать заметку</title>
+</head>
+<body>
+<form th:action="@{/createNewNote}">
+    <label for="name">Имя</label>
+    <input type="text" th:name="noteName" id="name"/>
+    <label for="desc">Описание</label>
+    <input type="text" th:name="noteDesc" id="desc"/>
+    <input type="submit" value="Создать заметку"/>
+</form>
+</body>
+</html>

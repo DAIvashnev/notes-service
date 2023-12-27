@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+    <link th:href="@{/styles/index-style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:switch="${notes}">
+    <h2 th:case="null">У вас еще нет заметок</h2>
+    <div th:case="*">
+        <h2>Заметки:</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Описание</th>
+                <th>Статус</th>
+                <th>Крайний срок</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="note : ${notes}">
+                <td th:text="${note.name}"></td>
+                <td th:text="${note.description}"></td>
+                <td th:text="${note.status}"></td>
+                <td th:text="${note.deadline}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<p><a href="/newNote">Создать новую заметку</a></p>
+</body>
+</html>
