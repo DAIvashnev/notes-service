@@ -28,3 +28,15 @@
 ```bash
 .../notes/target java -jar notes-2.0.0.jar
 ```
+### Руководство пользования приложением после запуска сервера:
++ Главная страница отображения заметок исполняется командой - http://localhost:8080/notes
+
++ Создания новой заметки - http://localhost:8080/notes/createNote
+
++ Получить заметку по id - http://localhost:8080/notes/getNoteById?id=note_id
+
++ Получить заметку по имени - http://localhost:8080/notes/getNoteByName?name=note_name
+
++ Удалить заметку по id - http://localhost:8080/notes/deleteNoteById?id=note_id (заметка принимает статутс "DELETED". Это значит что в базе данных она продолжает существовать, но уже для пользователя в общем меню она не отображается)
+
++ Редактировать содержание заметки по id - http://localhost:8080/notes/updateNoteById?id=note_id
