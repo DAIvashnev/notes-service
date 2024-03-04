@@ -33,6 +33,13 @@
 
 + Создания новой заметки - http://localhost:8080/notes/createNote.   
    ***Как пример, в "Postman" описать JSON, тело запроса.***
+```java
+{
+    "name": "note_name",
+    "description": "some_data",
+    "deadline": "yyyy-mm-dd hh:mm"
+}
+```
 
 + Получить заметку по id - http://localhost:8080/notes/getNoteById?id=note_id
 
